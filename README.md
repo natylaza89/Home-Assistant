@@ -28,4 +28,16 @@
 - Xiaomi Motion Sensor <br>
 - Mi Box 3 <br>
 </p>
+
+<h1><u>RPI3's Services:</u></h1>
+<p>
+- Home Assistant <br>
+- Unifi <br>
+- CUPS <br>
+- SSH Server<br>
+- Samba <br>
+- Mosquitto Server for OwnTracks <br> 
+- Lets Encrypt/Nginx <br>
+- PiHole <br>
+</p>
  </center>
