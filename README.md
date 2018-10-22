@@ -6,8 +6,8 @@
 <img src="https://github.com/natylaza89/Home-Assistant/blob/master/pics/mainbanner.png"><br>
 </center>
 
+<center><h1>Welcome to My Home Assistant Configuration Project!<br></h1></center>
 <p>
-<center>Welcome to My Home Assistant Configuration Project!<br></center>
 This is my current Home Assistant Configuration ( trying my best to keep it up to date ).<br>
 Below you will discover the devices & services that I currently use.
 I belive that you can get inspiration or ideas from my configuration such as I got from many awesome other github users.
