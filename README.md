@@ -16,7 +16,7 @@ I belive that you can get inspiration or ideas from my configuration such as I g
 <p align="center">Be sure to <g-emoji class="g-emoji" alias="star" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/2b50.png">⭐️</g-emoji> my repo!</p>
 
 <center>  
-<img src="https://github.com/natylaza89/Home-Assistant/blob/master/pics/network.png">
+<img src="https://github.com/natylaza89/Home-Assistant/blob/master/pics/network.png" width=100% height=75%>
 </center>
 
 <h1><u>Network Device List:</u></h1>
