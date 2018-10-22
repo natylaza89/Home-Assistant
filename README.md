@@ -19,9 +19,9 @@ I belive that you can get inspiration or ideas from my configuration such as I g
 <table>
 <thead>
 <tr>
-<th><a href="">Lovelace UI Screenshots</a></th>
+<th><a href="https://github.com/natylaza89/Home-Assistant/tree/master/HA%20Screenshots">Lovelace UI Screenshots</a></th>
 <th><a href="">Configuration</a></th>
-<th><a href="">Wikis</a></th>
+<th><a href="https://github.com/natylaza89/Home-Assistant/wiki">Wikis</a></th>
 </tr>
 </thead></table>
 
