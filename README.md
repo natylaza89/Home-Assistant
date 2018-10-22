@@ -14,6 +14,15 @@ I belive that you can get inspiration or ideas from my configuration such as I g
 </p>
 
 <p align="center">Be sure to <g-emoji class="g-emoji" alias="star" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/2b50.png">⭐️</g-emoji> my repo!</p>
+<br>
+<table align = center>
+<thead>
+<tr>
+<th><a href="">Lovelace UI Screenshots</a></th>
+<th><a href="">Configuration</a></th>
+<th><a href="">Wikis</a></th>
+</tr>
+</thead></table>
 
 <center>  
 <img src="https://github.com/natylaza89/Home-Assistant/blob/master/pics/network.png">
