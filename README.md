@@ -3,8 +3,20 @@
 <img src="https://github.com/natylaza89/Home-Assistant/blob/master/HA%20Screenshots/main.png">
 -->
 <center>
-<img src="https://github.com/natylaza89/Home-Assistant/blob/master/pics/mainbanner.png">
-  
+<img src="https://github.com/natylaza89/Home-Assistant/blob/master/pics/mainbanner.png"><br>
+</center>
+
+<p>
+<center>Welcome to My Home Assistant Configuration Project!<br></center>
+This is my current Home Assistant Configuration ( trying my best to keep it up to date ).<br>
+Below you will discover the devices & services that I currently use.
+I belive that you can get inspiration or ideas from my configuration such as I got from many awesome other github users.
+</p>
+
+<p align="center">Be sure to <g-emoji class="g-emoji" alias="star" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/2b50.png">⭐️</g-emoji> my repo!</p>
+
+
+<center>  
 <img src="https://github.com/natylaza89/Home-Assistant/blob/master/pics/xiaomi.png">
 
 <h1><u>Network Device List:</u></h1>
@@ -27,6 +39,7 @@
 - Xiaomi Temperature/Humidity Sensors <br>
 - Xiaomi Switch Button<br>
 - Xiaomi Motion Sensor <br>
+- Xiaomi MiJia Honeywell Smoke Detector <br>
 - Mi Box 3 <br>
 </p>
 
