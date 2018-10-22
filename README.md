@@ -6,7 +6,7 @@
 <img src="https://github.com/natylaza89/Home-Assistant/blob/master/pics/mainbanner.png"><br>
 </center>
 
-<center><h1>Welcome to My Home Assistant Configuration Project!<br></h1></center>
+<h1>Welcome to My Home Assistant Configuration Project!<br></h1>
 <p>
 This is my current Home Assistant Configuration ( trying my best to keep it up to date ).<br>
 Below you will discover the devices & services that I currently use.
@@ -15,9 +15,9 @@ I belive that you can get inspiration or ideas from my configuration such as I g
 
 <p align="center">Be sure to <g-emoji class="g-emoji" alias="star" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/2b50.png">⭐️</g-emoji> my repo!</p>
 
-
 <center>  
-<img src="https://github.com/natylaza89/Home-Assistant/blob/master/pics/xiaomi.png">
+<img src="https://github.com/natylaza89/Home-Assistant/blob/master/pics/network.png">
+</center>
 
 <h1><u>Network Device List:</u></h1>
 <p>
@@ -25,12 +25,20 @@ I belive that you can get inspiration or ideas from my configuration such as I g
 - Unifi Access Point AC Pro <br>
 </p>
 
+<center>  
+<img src="https://github.com/natylaza89/Home-Assistant/blob/master/pics/hardware.png">
+</center>
+
 <h1><u>Hardware & Communication Device List:</u></h1>
 <p>
 - Broadlink RM Pro RF433/IR <br>
 - Amazon Echo Dot <br>
 - Raspberry Pie 3
 </p>
+
+<center>  
+<img src="https://github.com/natylaza89/Home-Assistant/blob/master/pics/xiaomi.png">
+</center>
 
 <h1><u>Xiaomi Smart Home Device List:</u></h1>
 <p>
