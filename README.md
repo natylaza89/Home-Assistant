@@ -15,7 +15,7 @@ I belive that you can get inspiration or ideas from my configuration such as I g
 
 <p align="center">Be sure to <g-emoji class="g-emoji" alias="star" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/2b50.png">⭐️</g-emoji> my repo!</p>
 <br>
-<center>  
+ 
 <table>
 <thead>
 <tr>
@@ -24,15 +24,15 @@ I belive that you can get inspiration or ideas from my configuration such as I g
 <th><a href="">Wikis</a></th>
 </tr>
 </thead></table>
-</center>  
+
 <center>  
 <img src="https://github.com/natylaza89/Home-Assistant/blob/master/pics/network.png">
 </center>
 
 <h1><u>Network Device List:</u></h1>
 <p>
-- Edge Router Lite <br>
-- Unifi Access Point AC Pro <br>
+ - <a href="https://www.amazon.co.uk/UBIQUITI-Networks-ERLITE-ERLite-3-Router/dp/B00HXT8EKE/ref=sr_1_5?s=computers&srs=3998560031&ie=UTF8&qid=1540211918&sr=1-5">Edge Router Lite</a> <br>
+- <a href="https://www.amazon.de/gp/product/B016XYQ3WK/ref=oh_aui_detailpage_o00_s00?ie=UTF8&psc=1">Unifi Access Point AC Pro</a> <br>
 </p>
 
 <center>  
@@ -41,9 +41,9 @@ I belive that you can get inspiration or ideas from my configuration such as I g
 
 <h1><u>Hardware & Communication Device List:</u></h1>
 <p>
-- Broadlink RM Pro RF433/IR <br>
-- Amazon Echo Dot <br>
-- Raspberry Pie 3
+ - <a href="https://www.gearbest.com/smart-home-controls/pp_255607.html?wid=1433363">Broadlink RM Pro RF433/IR</a> <br>
+ - <a href="https://www.amazon.com/gp/product/B01DFKC2SO/ref=oh_aui_detailpage_o00_s01?ie=UTF8&psc=1">Amazon Echo Dot</a> <br>
+ - <a href="https://www.gearbest.com/raspberry-pi/pp_354347.html?wid=1433363">Raspberry Pie 3</a>
 </p>
 
 <center>  
@@ -52,13 +52,15 @@ I belive that you can get inspiration or ideas from my configuration such as I g
 
 <h1><u>Xiaomi Smart Home Device List:</u></h1>
 <p>
-- Xiaomi Gateway <br>
-- Xiaomi Doow/Window Sensors <br>
-- Xiaomi Temperature/Humidity Sensors <br>
-- Xiaomi Switch Button<br>
-- Xiaomi Motion Sensor <br>
-- Xiaomi MiJia Honeywell Smoke Detector <br>
-- Mi Box 3 <br>
+-<a href="https://www.gearbest.com/alarm-systems/pp_345588.html?wid=1433363"> Xiaomi Gateway </a><br>
+-<a href="https://www.gearbest.com/smart-light-bulb/pp_257677.html?wid=1433363"> Xiaomi Doow/Window Sensors</a> <br>
+-<a href="https://www.gearbest.com/living-appliances/pp_344665.html?wid=1433363"> Xiaomi Temperature/Humidity Sensors </a><br>
+-<a href="https://www.gearbest.com/smart-light-bulb/pp_257679.html?wid=1433363"> Xiaomi Switch Button</a><br>
+-<a href="https://www.banggood.com/Original-Xiaomi-Intelligent-Human-Sensor-Control-Smart-Home-Suit-Kit-Accessory-p-1017540.html?rmmds=search&cur_warehouse=CN"> Xiaomi Motion Sensor</a><br>
+-<a href="https://www.gearbest.com/home-smart-improvements/pp_668897.html?wid=1433363">Xiaomi Water Sensor</a><br>
+ -<a href="https://www.gearbest.com/power-strips/pp_341431.html?wid=1433363">Xiaomi Smart Plug</a><br>
+-<a href="https://www.gearbest.com/alarm-systems/pp_615081.html?wid=1433363"> Xiaomi MiJia Honeywell Smoke Detector</a><br>
+-<a href="https://www.banggood.com/Xiaomi-Mi-Box-Amlogic-S905X-2GB-RAM-8GB-ROM-TV-Box-International-Version-p-1182281.html?rmmds=search"> Mi Box 3 </a> <br>
 </p>
 
 <h1><u>RPI3's Services:</u></h1>
