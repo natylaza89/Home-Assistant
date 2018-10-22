@@ -53,7 +53,7 @@ I belive that you can get inspiration or ideas from my configuration such as I g
 <h1><u>Xiaomi Smart Home Device List:</u></h1>
 <p>
 -<a href="https://www.gearbest.com/alarm-systems/pp_345588.html?wid=1433363"> Xiaomi Gateway </a><br>
--<a href="https://www.gearbest.com/smart-light-bulb/pp_257677.html?wid=1433363"> Xiaomi Doow/Window Sensors</a> <br>
+-<a href="https://www.gearbest.com/smart-light-bulb/pp_257677.html?wid=1433363"> Xiaomi Door/Window Sensors</a> <br>
 -<a href="https://www.gearbest.com/living-appliances/pp_344665.html?wid=1433363"> Xiaomi Temperature/Humidity Sensors </a><br>
 -<a href="https://www.gearbest.com/smart-light-bulb/pp_257679.html?wid=1433363"> Xiaomi Switch Button</a><br>
 -<a href="https://www.banggood.com/Original-Xiaomi-Intelligent-Human-Sensor-Control-Smart-Home-Suit-Kit-Accessory-p-1017540.html?rmmds=search&cur_warehouse=CN"> Xiaomi Motion Sensor</a><br>
