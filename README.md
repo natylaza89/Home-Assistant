@@ -57,8 +57,8 @@ I belive that you can get inspiration or ideas from my configuration such as I g
 -<a href="https://www.gearbest.com/living-appliances/pp_344665.html?wid=1433363"> Xiaomi Temperature/Humidity Sensors </a><br>
 -<a href="https://www.gearbest.com/smart-light-bulb/pp_257679.html?wid=1433363"> Xiaomi Switch Button</a><br>
 -<a href="https://www.banggood.com/Original-Xiaomi-Intelligent-Human-Sensor-Control-Smart-Home-Suit-Kit-Accessory-p-1017540.html?rmmds=search&cur_warehouse=CN"> Xiaomi Motion Sensor</a><br>
--<a href="https://www.gearbest.com/home-smart-improvements/pp_668897.html?wid=1433363">Xiaomi Water Sensor</a><br>
- -<a href="https://www.gearbest.com/power-strips/pp_341431.html?wid=1433363">Xiaomi Smart Plug</a><br>
+- <a href="https://www.gearbest.com/home-smart-improvements/pp_668897.html?wid=1433363">Xiaomi Water Sensor</a><br>
+- <a href="https://www.gearbest.com/power-strips/pp_341431.html?wid=1433363">Xiaomi Smart Plug</a><br>
 -<a href="https://www.gearbest.com/alarm-systems/pp_615081.html?wid=1433363"> Xiaomi MiJia Honeywell Smoke Detector</a><br>
 -<a href="https://www.banggood.com/Xiaomi-Mi-Box-Amlogic-S905X-2GB-RAM-8GB-ROM-TV-Box-International-Version-p-1182281.html?rmmds=search"> Mi Box 3 </a> <br>
 </p>
