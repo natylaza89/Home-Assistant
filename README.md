@@ -70,8 +70,13 @@ I belive that you can get inspiration or ideas from my configuration such as I g
 - CUPS <br>
 - SSH Server<br>
 - Samba <br>
-- Mosquitto Server for OwnTracks <br> 
+- Mosquitto (MQTT Server) <br> 
 - Lets Encrypt/Nginx <br>
-- PiHole <br>
+</p>
+
+<h1><u>TO-DO List:</u></h1>
+<p>
+- Pi-Hole<br>
+- Tasmota Server
 </p>
  </center>
