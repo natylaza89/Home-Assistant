@@ -1,0 +1,135 @@
+###############################################################################
+#   @author         :   Naty Laza
+#   @date           :   28/10/2018
+#   @package        :   General Information
+#   @description    :   Currencies Rates,RPI3 Status&Info, HA Version
+###############################################################################
+
+####################################################
+#                   Customize                      #
+####################################################
+
+homeassistant:
+  customize: 
+# Currencies Rate Bank of Israel
+     sensor.exchange_date:
+      icon: mdi:update
+     sensor.dollarusd:
+      icon: mdi:currency-usd 
+     sensor.euroeur:
+      icon: mdi:currency-eur 
+     sensor.poundgbp:
+      icon: mdi:currency-gbp
+      
+# RPI3 Information
+     sensor.cpu_temp:
+      icon: mdi:temperature-celsius
+     sensor.disk_use_percent_home:
+      friendly_name: "Disk Use"
+     sensor.disk_free_home:
+      friendly_name: "Disk Free"
+     sensor.memory_use_percent:
+      friendly_name: "Memory Use"
+     sensor.uptime_in_days:
+      friendly_name: "Days"
+     sensor.uptime_in_hours:
+      friendly_name: "Hours"
+     sensor.uptime_in_minutes:
+      friendly_name: "Minutes"
+      
+#Ha Versions
+     sensor.ha_github_version:
+      icon: mdi:github-circle
+     sensor.ha_pypi_version:
+      icon: mdi:language-python
+     sensor.current_version:
+      icon: mdi:home-assistant
+
+####################################################
+#                   Sensors                        #
+####################################################
+sensor:
+
+# RPI3 Info
+ - platform: uptime
+   name: Uptime in days
+   unit_of_measurement: days
+   
+ - platform: uptime
+   name: Uptime in hours
+   unit_of_measurement: hours
+   
+ - platform: uptime
+   name: Uptime in minutes
+   unit_of_measurement: minutes
+ 
+ - platform: time_date
+   display_options:
+      - 'time'
+      - 'date'
+
+ - platform: systemmonitor
+   resources:
+      - type: disk_use_percent
+        arg: /home
+      - type: disk_free
+        arg: /home
+      - type: memory_use_percent
+      - type: memory_free
+      - type: last_boot
+      - type: since_last_boot
+ 
+ #rpi3 power
+ - platform: rpi_power
+
+  #CPU Temp   
+ - platform: command_line
+   name: CPU Temp
+   command: "cat /sys/class/thermal/thermal_zone0/temp"
+   unit_of_measurement: "C"
+   value_template: '{{ value | multiply(0.001) | round(1) }}'   
+   
+# Currencies Rate Bank of Israel 
+ 
+ - platform: command_line
+   name: Exchange Date
+   command: "curl get https://www.boi.org.il/currency.xml?curr=27 2>&1 | grep LAST_UPDATE | grep -o '[0-9]*-[0-9]*-[0-9]*' "
+   scan_interval: 43200 #12 Hours
+
+ - platform: command_line
+   name: Dollar(USD)
+   command: "curl get https://www.boi.org.il/currency.xml?curr=01 2>&1 | grep RATE | grep -o '[0-9].*[0-9]' "
+   scan_interval: 43200 #12 Hours
+
+ - platform: command_line
+   name: Euro(EUR)
+   command: "curl get https://www.boi.org.il/currency.xml?curr=27 2>&1 | grep RATE | grep -o '[0-9].*[0-9]' "
+   scan_interval: 43200 #12 Hours
+
+ - platform: command_line
+   name: Pound(GBP)
+   command: "curl get https://www.boi.org.il/currency.xml?curr=02 2>&1 | grep RATE | grep -o '[0-9].*[0-9]' "
+   scan_interval: 43200 #12 Hours
+   
+#Versions of Home Assistant
+ - platform: version
+   name: Current Version
+
+ - platform: rest
+   name: ha_pypi_version
+   resource: 'https://pypi.python.org/pypi/homeassistant/json'
+   value_template: >-
+     {{ value_json.info.version }}
+   scan_interval: 1800
+    
+ - platform: rest
+   name: ha_github_version
+   resource: 'https://api.github.com/repos/home-assistant/home-assistant/releases/latest'
+   headers:
+     accept: application/vnd.github.v3+json
+     content-type: application/json
+     user-agent: home-assistant/rest-sensor
+   value_template: >-
+     {{ value_json.tag_name if value_json.tag_name.split('.')|length != 2 else value_json.tag_name ~ '.0' }}
+   scan_interval: 1800
+

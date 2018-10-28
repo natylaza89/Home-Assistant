@@ -1,0 +1,51 @@
+###############################################################################
+#   @author         :   Naty Laza
+#   @date           :   28/10/2018
+#   @package        :   I-Life X5 Vacum Cleaner
+#   @description    :   IR Commands to Control The "Smart" Robot
+###############################################################################
+
+####################################################
+#                   Customize                      #
+####################################################
+homeassistant:
+  customize:
+     script.ilife_base:
+      icon: mdi:battery-charging-100
+      assumed_state: false
+     script.ilife_clean:
+      icon: mdi:robot-vacuum
+      assumed_state: false
+     script.ilife_clean_edge:
+      icon: mdi:border-outside
+      assumed_state: false
+      
+############################################################
+#                          Scripts                         #
+############################################################
+
+script:
+#Base 
+    ilife_base:
+      sequence:
+        - service: switch.broadlink_send_packet_X_X_X_X
+          data:
+            packet:
+              - "JgBcAJOPExETEBMREzQTEBMREzQTEJOPExETEBMREzQTEBMREzQTEJSOExETEBMREzQTEBMREzQTEJOPExETEBMREzQTEBMREzQTEJSOExETEBMREzQTEBMREzQTAA0FAAAAAAAAAAAAAAAA"
+  
+#Clean    
+    ilife_clean:
+      sequence:
+        - service: switch.broadlink_send_packet_X_X_X_X
+          data:
+            packet:
+              - "JgBcAJSPExATNBMREzQTEBM1ExATEJSOFBATNBMREzQTEBQzExETEJOPExETNBMQEzQUEBM0ExATEJSPExATNRMQEzQTERM0ExATEJSPExATNBMREzQSEhM0ExATAA0FAAAAAAAAAAAAAAAA"
+              
+#Edge   
+    ilife_clean_edge:
+      sequence:
+        - service: switch.broadlink_send_packet_X_X_X_X
+          data:
+            packet:
+              - "JgBcAJOQEzQTNBMREjUTNBI1ExESEJSPEzQTNBMREjUTNBM1ExATEJSOEzUTNBQPEjYSNRM0ExASEZSPEzQSNRISEjUSNRM0ExESEJOQEzQTNRIREjUSNRM1EhESAA0FAAAAAAAAAAAAAAAA"
+              

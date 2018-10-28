@@ -1,0 +1,112 @@
+###############################################################################
+#   @author         :   Naty Laza
+#   @date           :   28/10/2018
+#   @package        :   Maintanace
+#   @description    :   Shell Commands, Script, Automation for Maintanace , 
+#                       SSL Renew Automation and Notification
+###############################################################################
+
+####################################################
+#                   Customize                      #
+####################################################
+
+homeassistant:
+  customize_domain:
+    automation:
+      initial_state: 'on'
+  
+  customize:
+      
+#Automations
+     automation.check_automations_status:
+      icon: mdi:home-automation
+      friendly_name: "Check Automation All vs ON"
+     automation.ssl_certificate_expiry_notification:
+      icon: mdi:security-lock
+      friendly_name: "SSL Certificate Expiry"
+     automation.ha_new_version:
+      icon: mdi:home-assistant
+      friendly_name: "Ha New Version"
+
+####################################################
+#                 Shell Commands                   #
+####################################################
+shell_command:
+  renew_ssl: ~/certbot/certbot-auto renew --quiet --no-self-upgrade --standalone --preferred-challenges http-01
+          
+####################################################
+#                    Automation                    #
+####################################################
+
+#HA Version Update
+automation:
+- id: HA New Version
+  alias: HA New Version
+  initial_state: 'on'
+  trigger:
+  - platform: template
+    value_template: "{{ states('sensor.ha_pypi_version') != states('sensor.current_version')  }}"
+  - platform: template
+    value_template: "{{ states('sensor.ha_github_version') != states('sensor.current_version')  }}"
+  action:
+  - service: notify.telehome_naty
+    data_template:
+          message: >
+            Home Assistant {{ trigger.to_state.state }} is now available on {{ trigger.to_state.name.split(' ')[0] }}
+            
+#SSL Notifications
+- id: Renew SSL Certificate
+  alias: Renew SSL Certificate
+  initial_state: on
+  trigger:
+      platform: numeric_state
+      entity_id: sensor.ssl_certificate_expiry
+      below: 25
+  action:
+    - service: shell_command.renew_ssl
+    - service: notify.telehome_naty
+      data:
+        title: '*SSL Renew Alert*'
+        message: |
+            SSL has renew.
+            Please make sure it with /ssl
+
+- id: SSL certificate expiry notification
+  alias: SSL certificate expiry notification
+  initial_state: on
+  trigger:
+      platform: numeric_state
+      entity_id: sensor.ssl_certificate_expiry
+      below: 21
+  action:
+  - service: notify.telehome_naty
+    data:
+        title: '*SSL Renew Alert*'
+        message: |
+            Warning - SSL certificate expires in 21 days and has not been automatically renewed.
+            Please take action inorder to resolve this.
+
+#Automation Count           
+- id: Check Automations Status
+  alias: Check Automations Status
+  initial_state: on
+  trigger:
+      - platform: homeassistant
+        event: start
+      - platform: time
+        hours: '/1'
+        minutes: 00
+        seconds: 00
+  action:
+      - delay: 00:01:00
+      - service: python_script.all_automations_counter
+      - service: python_script.on_automations_counter
+      - delay: 00:00:30
+      - condition: template
+        value_template: "{{ states('sensor.automation_on') != states('sensor.automation_all') }}"
+      - service: persistent_notification.create
+        data:
+          notification_id: "Automations_counter"
+          title: "Automations Alert"
+          message: "Some Automations are Disabled."
+

@@ -1,0 +1,126 @@
+<dom-module id="state-card-custom-fanspeed">
+  <template>
+    <style is="custom-style" include="iron-flex iron-flex-alignment"></style>
+    <style>
+      :host {
+        line-height: 1.5;
+      }
+      paper-button {
+		    min-width: 30px;
+		    height: 30px;
+		    margin: 2px;  
+		    background-color:#f3f3f3;
+		    border: 1px solid lightgrey; 
+		    font-size: 10px !important;
+		    float: right !important;   	
+      }
+    </style>
+		<div class='horizontal justified layout'>
+		  <state-info state-obj="[[stateObj]]"></state-info>
+		  <paper-button-group>
+		      <paper-button style="[[btnOffstyle]]" on-click='handleOffTap'>Off</paper-button>
+		      <paper-button style="[[btnLowstyle]]" on-click='handleLowTap'>Low</paper-button>
+		      <paper-button style="[[btnMedstyle]]" on-click='handleMedTap'>Med</paper-button>
+		      <paper-button style="[[btnHighstyle]]" on-click='handleHighTap'>High</paper-button>
+		  </paper-button-group>
+		</div>
+</template>
+</dom-module>
+<script>
+        Polymer({
+          is: 'state-card-custom-fanspeed',
+          properties: {
+            hass: {
+              type: Object,
+            },
+            stateObj: {
+              type: Object,
+              observer: 'stateObjChanged',
+            },
+            statusValue: {
+              type: String,
+              value: 'Unset',
+            },
+            btnOffstyle: {
+              type: String,
+              value: '',
+            },
+            btnHighstyle: {
+              type: String,
+              value: '',
+            },
+            btnMedstyle: {
+              type: String,
+              value: '',
+            },
+            btnLowstyle: {
+              type: String,
+              value: '',
+            },
+          },
+          stateObjChanged: function (newVal) {
+            if (newVal) {
+              if (newVal.attributes.speed == 'off') {
+                this.statusValue = 'off';
+                this.btnOffstyle = 'background-color: #42d9f4;';
+                this.btnLowstyle = '';
+                this.btnMedstyle = '';
+                this.btnHighstyle = '';
+                this.updateStyles({'--status-text-color': 'gray'});
+              } else if (newVal.attributes.speed == 'low') {
+                this.statusValue = 'low';
+                this.btnOffstyle = '';
+                this.btnLowstyle = 'background-color: #42d9f4;';
+                this.btnMedstyle = '';
+                this.btnHighstyle = '';    
+                this.updateStyles({'--status-text-color': 'blue'});       
+              } else if (newVal.attributes.speed == 'medium') {
+                this.statusValue = 'medium';
+                this.btnOffstyle = '';
+                this.btnLowstyle = '';
+                this.btnMedstyle = 'background-color: #42d9f4;';
+                this.btnHighstyle = '';
+                this.updateStyles({'--status-text-color': 'yellow'});
+              } else if (newVal.attributes.speed == 'high') {
+                this.statusValue = 'high';
+                this.btnOffstyle = '';
+                this.btnLowstyle = '';
+                this.btnMedstyle = '';
+                this.btnHighstyle = 'background-color: #42d9f4;';
+                this.updateStyles({'--status-text-color': 'red'});
+              }              
+            }
+          },
+        	handleHighTap: function (ev) {
+						this.setSpeed(ev, 'high');
+          },
+        	handleMedTap: function (ev) {
+						this.setSpeed(ev, 'medium');
+          },
+        	handleLowTap: function (ev) {
+						this.setSpeed(ev, 'low');
+          },
+        	handleOffTap: function (ev) {
+            this.setSpeed(ev, 'off');
+          },
+          setSpeed: function (ev, setspeed ) {
+          	if( setspeed == 'off' ){
+          		this.updateStyles({'--status-text-color': '#F44336'});
+							this.updateStyles({'--state-label-badge': '#F44336'});
+							var serviceData = {entity_id: this.stateObj.entity_id};
+            	this.hass.callService('fan', 'turn_off', serviceData);          		
+          		
+          	} else {
+          		if (this.stateObj.state != 'on'){
+								var serviceData = {entity_id: this.stateObj.entity_id, speed: setspeed };
+            		this.hass.callService('fan', 'turn_on', serviceData );          			
+          		}else{
+          			var serviceData = {entity_id: this.stateObj.entity_id, speed: setspeed };
+          			this.hass.callService('fan', 'set_speed', serviceData );
+          		}
+          	}
+          	 ev.stopPropagation();
+          },
+         
+});
+</script>

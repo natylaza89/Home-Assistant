@@ -1,0 +1,195 @@
+###############################################################################
+#   @author         :   Naty Laza
+#   @date           :   28/10/2018
+#   @package        :   Living Room TV
+#   @description    :   Samsung TV Configuration
+###############################################################################
+
+####################################################
+#                   Customize                      #
+####################################################
+homeassistant:
+  customize:
+     switch.lrtv_power:
+      friendly_name: "Power"
+      icon: mdi:power
+      assumed_state: false  
+     switch.lrtv_mute:
+      friendly_name: "Mute"
+      icon: mdi:volume-off
+      assumed_state: false
+     
+     script.lrtv_volume_up:
+      friendly_name: "Volume Up"
+      icon: mdi:volume-plus
+      assumed_state: false
+     script.lrtv_volume_down:
+      friendly_name: "Volume Down"
+      icon: mdi:volume-minus
+      assumed_state: false
+     script.lrtv_select_source:
+      friendly_name: "Source"
+      icon: mdi:television
+      assumed_state: false
+     script.lrtv_right_arrow:
+      icon: mdi:arrow-right-bold-circle
+      assumed_state: false
+     script.lrtv_left_arrow:
+      icon: mdi:arrow-left-bold-circle
+      assumed_state: false
+     script.lrtv_up_arrow:
+      icon: mdi:arrow-up-bold-circle
+      assumed_state: false
+     script.lrtv_down_arrow:
+      icon: mdi:arrow-down-bold-circle
+      assumed_state: false
+     script.lrtv_ok_button:
+      icon: mdi:check-circle
+      assumed_state: false
+     script.lrtv_menu_button:
+      icon: mdi:menu
+      assumed_state: false
+     script.lrtv_return_button:
+      icon: mdi:backspace
+      assumed_state: false
+     script.lrtv_exit_button:
+      icon: mdi:close-circle
+      assumed_state: false
+      
+####################################################
+#                      Switch                      #
+####################################################
+
+# Broadlink Configuration
+
+switch:  
+  - platform: broadlink
+    host: !secret broadlink_host
+    mac: !secret broadlink_mac
+    friendly_name: rm
+    type: rm
+    timeout: 15
+    switches: 
+#tv_power
+     lrtv_power:
+      friendly_name: "TV Power"
+      command_on: 'JgCMAJKWEDoQOhE3ExMTDxUREhQRExYzFTYTNhUREw8VERUPFRESEhE4EhMWEBQPFRIVDxQRFDQVEhE5FjQUNRQ1FDYUNBIABgCYkQ85FzQVMxMSERUSExIREhMSORA5EDoREhIUEBQUEBcPExITNhITEBQRFBYOFg8VERE4FREPOhYzFDUVNBU2EzUVAA0FAAAAAAAAAAAAAAAA'
+      command_off: 'JgDSAJWTFDYUNhM3ExERFBEUERQRFBA5FDYUNhMSEBQSExEUERQRFBEUEBUQORM3EhMRFBA5FDYTNxI3ExIRFBA6EjcVEBEABgWVlBI3FTUSOBISEhMRFBEUEBURORI3EzcSExAUERQRFBEUERQRFBEUEDkTNxMSERQQORM3EzcTNhQRERQQOhM2FBERAAYFlZMUNhM3EzYUEREUERQRFBEUEDkUNhM3ExERFBEUERQRFBAVEBQRFBE5EzcTERITETkTNxM2FDYTEhEUEDkUNhMSEQANBQAAAAAAAA=='
+#tv_mute 
+     lrtv_mute:
+      friendly_name: "TV Mute"
+      command_on: 'JgCMAJKUFDUVMxYzFhEVERUTERIUEhUzFjMVNRURFREVERQSERQUNRQ0FTUWMxUSFBEVERURFREUEhEUFhAUNRUzFzMVNRUABgOWkRYzFjQVNBYRFBITEhMSFREVMxY1FDQWEBURFRMPFRMTFDQVNRYyFzQVExIRFBMUEhQSEhIVERQRFTQWNBQ1FTQVAA0FAAAAAAAAAAAAAAAA'
+      command_off: 'JgCMAJKUFDUVMxYzFhEVERUTERIUEhUzFjMVNRURFREVERQSERQUNRQ0FTUWMxUSFBEVERURFREUEhEUFhAUNRUzFzMVNRUABgOWkRYzFjQVNBYRFBITEhMSFREVMxY1FDQWEBURFRMPFRMTFDQVNRYyFzQVExIRFBMUEhQSEhIVERQRFTQWNBQ1FTQVAA0FAAAAAAAAAAAAAAAA' 
+
+############################################################
+#                         Sensors                          #
+############################################################
+
+sensor:
+  - platform: template
+    sensors:
+#TV Power State     
+       lr_tv_status:
+         value_template: >-
+            {% if is_state('switch.lrtv_power', 'on') %}
+               on
+            {% else %}
+               off
+            {% endif %}
+         friendly_name: 'Living Room Samsung TV'
+         
+############################################################
+#                          Scripts                         #
+############################################################
+
+script:
+# Living Room TV Remote's Scripts
+ # Change Source #  
+    lrtv_select_source:
+      sequence:
+        - service: switch.broadlink_send_packet_X_X_X_X
+          data:
+            packet:
+              - "JgCQAJaRFTMVNBUzFhIVExUTFRMUExY0FTMWMhYSFhIVExUTFRQUNBMUFBUUExYRFhIVEhUUExUUNBQ0EzYUNhQ0FTMWMxUABgOWkhYzFzEWMxYSFhIWERYSFhIWMxU0FTUSFBQTFRMWExQTFzMVFBITExUWERgQFxEWEhYSFTMWMxcyFTQVNBUzFjQVAAXuCgANBQAAAAAAAAAA"
+              - "JgCQAJaRFTMVNBUzFhIVExUTFRMUExY0FTMWMhYSFhIVExUTFRQUNBMUFBUUExYRFhIVEhUUExUUNBQ0EzYUNhQ0FTMWMxUABgOWkhYzFzEWMxYSFhIWERYSFhIWMxU0FTUSFBQTFRMWExQTFzMVFBITExUWERgQFxEWEhYSFTMWMxcyFTQVNBUzFjQVAAXuCgANBQAAAAAAAAAA"
+              - "JgCKABE2EzcVMxMUFBEVEBQQFBMSNBU1FDQVExQQFRARExMTFBMTEhEQFTUWEBU0FTMVEhQ0FTQVNBEVEzUVEBQRFTMVAAYGlJIUNBc1ETUVERMTExMTERITFTIVNBQ1FRIVEBYPFBIRExUQFBEREhQ2FRAVNBQ1FRAVNBU0FTQRFRM2FRAVEBM0FAANBQAAAAAAAAAAAAAAAAAA"
+  
+#Right Arrow    
+    lrtv_right_arrow:
+      sequence:
+        - service: switch.broadlink_send_packet_X_X_X_X
+          data:
+            packet:
+              - "JgCMAJCUEzcSOBI4EhISExITEhMSEhM3EjgSNxMSEhMSExISExISExI4EhISExITEjcTNxITEjgSEhM3EjgSNxMSEhMSOBIABgSQlBM3EjgSNxMSEhMSExITEhISOBI4EjcSExITEhMSEhMSEhMSOBISExISExI4EjcSExI4EhMSNxI4EjgSEhMSEjgSAA0FAAAAAAAAAAAAAAAA"
+              
+#Left Arrow    
+    lrtv_left_arrow:
+      sequence:
+        - service: switch.broadlink_send_packet_X_X_X_X
+          data:
+            packet:
+              - "JgCMAJKVEjcTNxI4EhMSEhMSEhMSExI4EjcTNxITEhMSExISExISOBITEjcTEhITEjgSOBISExISOBITEjcTNxITEhMSNxMABgOTlBI4EjcTNxITEhMSExISExISOBI4EjcSExITEhMSExISEzcSExI4EhITEhI4EjgSEhMSEjgSExI4EjcSExITEjgSAA0FAAAAAAAAAAAAAAAA"
+              
+#Up Arrow    
+    lrtv_up_arrow:
+      sequence:
+        - service: switch.broadlink_send_packet_X_X_X_X
+          data:
+            packet:
+              - "JgCMAJOUEjgSOBI3EhMSExITEhMSEhM3EjgSNxMSEhMSExITEhISExITEhMSEhITEjgSNxITEjgSNxI4EjgSNxITEhMSOBIABgSPlBI4EjcTNxITEhMSEhITEhMSNxI4EjgSEhITEhMSExISEhMSExISEhMSExI3EjgSExI3EjgSOBI3EjgSExISEjgSAA0FAAAAAAAAAAAAAAAA"
+              
+#Down Arrow    
+    lrtv_down_arrow:
+      sequence:
+        - service: switch.broadlink_send_packet_X_X_X_X
+          data:
+            packet:
+              - "JgCMAIWWEjgSOBI3EhMSFBAUDxYQExI4ETgSOBEUERQRExAVEBQSNxMSERMSExISEjgSNxITEhMROBI4EjcSOBITERMSOBIABgOPlRI3EjgSOBISExISExITEhISOBI4EjcSExITEhMSEhITEjgSEhMSEhMSExI3EjgSExISEzcTNxI3EjgSExITEjcSAA0FAAAAAAAAAAAAAAAA"
+              
+#OK Button    
+    lrtv_ok_button:
+      sequence:
+        - service: switch.broadlink_send_packet_X_X_X_X
+          data:
+            packet:
+              - "JgCMAJSVEzcSNxI4EhMSFBETEhMRFBA5EjgSNxIUERQRFBISEhQRExISExQQOREUETcTNxIUEjcSOBI4EhMSNxMSEhISOREABgSUlBI2FDcSORISEhMSExMRExITNxA6EjcTExISEhMSExIUERMSEhITEjgSExI3EzcTEhI4EzYUNhITEjgSExISEzcSAA0FAAAAAAAAAAAAAAAA"
+              
+#Volume Up 
+    lrtv_volume_up:
+      sequence:
+        - service: switch.broadlink_send_packet_X_X_X_X
+          data:
+            packet:
+              - "JgCMAJWUEjcTNxM3EhMSEhMSEhMSExI4EjcSOBITEhMSExISEhMSOBI3EzcSExITEhMSEhMSEhMSExITEjgSNxI4EjcTNxIABgOVkxM3EjgSNxITEhMSExITEhMSNxM3EjcTEhITEhMSExITEjcSOBM3EhITEhITEhMSExITEhITEhI4EjgTNhM3EjcUAA0FAAAAAAAAAAAAAAAA"
+              
+#Volume Down 
+    lrtv_volume_down:
+      sequence:
+        - service: switch.broadlink_send_packet_X_X_X_X
+          data:
+            packet:
+              - "JgCMAJSUEzcSOBI3EhMSExITEhMSEhM3EjgSNxMSEhMSExITEhMSNxM3EhMSOBISExISExITEhMSExI3EhMSOBI3EzcSOBIABgOUlBI3EzcSOBITEhITEhITEhMSOBI3EjgSExITEhITEhMSEjgSNxMSEjgSExITEhITEhITEhMSOBISEzcSOBI3EzcSAA0FAAAAAAAAAAAAAAAA"
+            
+#Menu Button 
+    lrtv_menu_button:
+      sequence:
+        - service: switch.broadlink_send_packet_X_X_X_X
+          data:
+            packet:
+              - "JgCMAJWUEjgSNxI4EhMSExITEhITEhI4EjgSNxMSExISExITEhMSExI3ExISOBI4EhITEhMSEjgSExI4EhITEhI4EjgSNxMABgSUlBI3EzcSOBITEhMSEhMSEhMSOBI4EjcSExITEhMSExITEhITNxITEjgSNxMSEhMSExI4EhMSNxMSEhMSOBI3EzcSAA0FAAAAAAAAAAAAAAAA"
+
+#Return Button
+    lrtv_return_button:
+      sequence:
+        - service: switch.broadlink_send_packet_X_X_X_X
+          data:
+            packet:
+              - "JgCMAJWUEjgSNxI4EhMSExITEhITEhI4EjgTNhMSEhMTEhITEhMSExISExISOBM3EhMSNxITEjgSOBI3ExITEhI4EhMSNxIABgWTkxU2EzcSOBMRExMRExITEhMTNxI3EjgSExITEhMSExISEhQRExIUEjcTNhITEzcSExI3EzcSOBMTEhIROBITEjgSAA0FAAAAAAAAAAAAAAAA"
+              
+#Exit Button
+    lrtv_exit_button:
+      sequence:
+        - service: switch.broadlink_send_packet_X_X_X_X
+          data:
+            packet:
+              - "JgCMAJSVEjcTNxI4EhMSExISExISExI4EjgSNxITEhMSExITEhMSNxITEjgSOBISEzcSExITEhMSNxMSExISOBITEjcTNxIABgSUlBM3EjgSOBISExITEhITEhMSOBI3EjgSExITEhMSEhMSEjgSExI4EjcSExI4EhMSExISEzcSExITEjgSEhM3EjgSAA0FAAAAAAAAAAAAAAAA"
