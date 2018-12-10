@@ -19,7 +19,7 @@ I belive that you can get inspiration or ideas from my configuration such as I g
 <table>
 <thead>
 <tr>
-<th><a href="https://github.com/natylaza89/Home-Assistant/tree/master/HA%20Screenshots">Lovelace UI Screenshots</a></th>
+<th><a href="https://github.com/natylaza89/Home-Assistant/tree/master/HA%20UI%20Screenshots">Lovelace UI Screenshots</a></th>
 <th><a href="https://github.com/natylaza89/Home-Assistant/tree/master/Config">Configuration</a></th>
 <th><a href="https://github.com/natylaza89/Home-Assistant/wiki">Wikis</a></th>
 </tr>
@@ -63,20 +63,23 @@ I belive that you can get inspiration or ideas from my configuration such as I g
 -<a href="https://www.banggood.com/Xiaomi-Mi-Box-Amlogic-S905X-2GB-RAM-8GB-ROM-TV-Box-International-Version-p-1182281.html?rmmds=search"> Mi Box 3 </a> <br>
 </p>
 
-<h1><u>RPI3's Services:</u></h1>
+<h1><u>Docker's Services:</u></h1>
 <p>
 - Home Assistant <br>
 - Unifi <br>
-- CUPS <br>
-- SSH Server<br>
-- Samba <br>
+- Portainer <br>
+- Heimdall<br>
 - Mosquitto (MQTT Server) <br> 
-- Lets Encrypt/Nginx <br>
+- Lets Encrypt <br>
+- Pi-Hole<br>
+- Tasmota Server <br>
+- Speedtest
 </p>
 
-<h1><u>TO-DO List:</u></h1>
+<h1><u>Other Services</u></h1>
 <p>
-- Pi-Hole<br>
-- Tasmota Server
+- CUPS <br>
+- Samba <br>
+- SSH Server
 </p>
  </center>
