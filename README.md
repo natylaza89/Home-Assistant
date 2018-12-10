@@ -66,17 +66,20 @@ I belive that you can get inspiration or ideas from my configuration such as I g
 <h1><u>Docker's Services:</u></h1>
 <p>
 - Home Assistant <br>
-- Unifi <br>
-- Portainer <br>
-- Heimdall<br>
+- MariaDB <br>
 - Mosquitto (MQTT Server) <br> 
 - Lets Encrypt <br>
 - Pi-Hole<br>
+- Unifi <br>
+- Portainer <br>
+- Heimdall<br>
 - Tasmota Server <br>
+- WatchTower <br>
+- HA-Dockermon<br>
 - Speedtest
 </p>
 
-<h1><u>Other Services</u></h1>
+<h1><u>Other Services:</u></h1>
 <p>
 - CUPS <br>
 - Samba <br>
