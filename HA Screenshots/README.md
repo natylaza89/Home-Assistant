@@ -4,6 +4,4 @@
 <img src="https://github.com/natylaza89/Home-Assistant/blob/master/HA%20Screenshots/media.png">
 <img src="https://github.com/natylaza89/Home-Assistant/blob/master/HA%20Screenshots/vacum.png">
 <img src="https://github.com/natylaza89/Home-Assistant/blob/master/HA%20Screenshots/security.png">
-<img src="https://github.com/natylaza89/Home-Assistant/blob/master/HA%20Screenshots/device_tracker.png">
-<img src="https://github.com/natylaza89/Home-Assistant/blob/master/HA%20Screenshots/automations.png">
 <img src="https://github.com/natylaza89/Home-Assistant/blob/master/HA%20Screenshots/information.png">
