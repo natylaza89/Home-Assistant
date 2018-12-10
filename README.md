@@ -47,7 +47,7 @@ I belive that you can get inspiration or ideas from my configuration such as I g
 </p>
 
 <center>  
-<img src="https://github.com/natylaza89/Home-Assistant/blob/master/pics/Xiaomi.png">
+<img src="https://github.com/natylaza89/Home-Assistant/blob/master/pics/xiaomi.png">
 </center>
 
 <h1><u>Xiaomi Smart Home Device List:</u></h1>
