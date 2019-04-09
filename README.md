@@ -62,13 +62,13 @@ I belive that you can get inspiration or ideas from my configuration such as I g
 -<a href="https://www.gearbest.com/power-strips/pp_341431.html?wid=1433363"> Xiaomi Smart Plug</a><br>
 -<a href="https://www.gearbest.com/alarm-systems/pp_615081.html?wid=1433363"> Xiaomi MiJia Honeywell Smoke Detector</a><br>
 -<a href="https://www.banggood.com/Xiaomi-Mi-Box-Amlogic-S905X-2GB-RAM-8GB-ROM-TV-Box-International-Version-p-1182281.html?rmmds=search"> Mi Box 3 </a> <br>
--<a href="https://www.gearbest.com/robot-vacuum/pp_009816316347.html?wid=1433363"> Xiaomi Mi Robot Vaccum </a> <br>
+-<a href="https://www.gearbest.com/robot-vacuum/pp_009816316347.html?wid=1433363"> Xiaomi Mi Robot Vaccum </a><br><br>
 </p>
 
 <center>  
 <img src="https://github.com/natylaza89/Home-Assistant/blob/master/pics/more.png">
 </center>
-
+<br>
 <h1><u>Additional Smart Home Device List:</u></h1>
 <p>
 -<a href="https://sensibo.com/products/sensibo-sky"> Sensibo</a> (Air Conditioner control)<br>
