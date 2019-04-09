@@ -11,5 +11,5 @@ Binary Sensor,Sesnro & Switch getting real-time information via mqtt.
 <h1>Tasmota Configuration:<br></h1>
 
 <center>  
-<img src=https://github.com/natylaza89/Home-Assistant/blob/master/pics/packages/laundry_machine/tasmota_frankever15aplug.jpg">
+<img src="https://github.com/natylaza89/Home-Assistant/blob/master/pics/packages/laundry_machine/tasmota_frankever15aplug.jpg">
 </center>
