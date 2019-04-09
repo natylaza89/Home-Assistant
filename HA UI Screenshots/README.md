@@ -6,4 +6,4 @@
 <img src="https://github.com/natylaza89/Home-Assistant/blob/master/HA%20UI%20Screenshots/boiler.png">
 <img src="https://github.com/natylaza89/Home-Assistant/blob/master/HA%20UI%20Screenshots/laundry_machine.png">
 <img src="https://github.com/natylaza89/Home-Assistant/blob/master/HA%20UI%20Screenshots/security.png">
-<img src="https://github.com/natylaza89/Home-Assistant/blob/master/HA%20UI%20Screenshots/maintenance_info.png.png">
+<img src="https://github.com/natylaza89/Home-Assistant/blob/master/HA%20UI%20Screenshots/maintenance_info.png">
