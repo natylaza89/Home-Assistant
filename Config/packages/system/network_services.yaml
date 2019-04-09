@@ -1,0 +1,147 @@
+######################################################################################
+#   @author         :   Naty Laza
+#   @date           :   04/01/2018
+#   @package        :   Network Services,Lovelace, Frontend(UI)
+#   @description    :   Auth,HTTP,FrontEnd,Wake On Lan, DuckDNS,MQTT,
+#                       Lets Encrypt , Speedtest.
+######################################################################################
+
+####################################################
+#                   Customize                      #
+####################################################
+
+homeassistant:
+  customize:
+#Speed Test  
+     sensor.speedtest_download:
+      icon: mdi:download
+     sensor.speedtest_upload:
+      icon: mdi:upload
+     sensor.speedtest_ping:
+      icon: mdi:console
+  customize_glob:
+    fan.*:
+      custom_ui_state_card: state-card-custom-fanspeed
+    switch.brfan_low:
+      custom_ui_state_card: state-card-custom-fanspeed
+    cover.*:
+      custom_ui_state_card: custom-ui
+
+customizer:
+  custom_ui: local    
+      
+####################################################
+#                 Authentication                   #
+#################################################### 
+
+auth:
+
+
+api:
+
+####################################################
+#                        HTTP                      #
+####################################################  
+
+http:
+ api_password: !secret api_password
+ base_url: !secret base_url
+ #ssl_certificate: !secret ssl_certificate
+ #ssl_key: !secret ssl_key
+ #login_attempts_threshold: 5
+ #use_x_forwarded_for: True
+ #trusted_proxies:
+ # - 127.0.0.1
+ # - !secret private_lan
+
+####################################################
+#               FrontEnd Includes                  #
+####################################################  
+
+frontend:
+  javascript_version: latest
+  extra_html_url:
+   - /local/custom_ui/state-card-custom-ui.html
+   - /local/custom_ui/state-card-custom-fanspeed.html
+
+  extra_html_url_es5:
+   - /local/custom_ui/state-card-custom-fanspeed.html
+   - /local/custom_ui/state-card-custom-ui-es5.html
+
+####################################################
+#             Lovelace Configuration               #
+####################################################  
+
+lovelace:
+  mode: yaml
+
+####################################################
+#                  Wake On Lan                     #
+####################################################  
+
+wake_on_lan:
+ mac: !secret broadlink_mac
+
+ 
+####################################################
+#                    DUCK-DNS                      #
+####################################################  
+
+duckdns: 
+  domain: !secret duckdns_domain
+  access_token: !secret duckdns_access_token
+
+####################################################
+#                       MQTT                       #
+#################################################### 
+
+mqtt:
+  broker: !secret broker_ip
+  port: !secret mqtt_port
+  client_id: !secret mqtt_client_id
+  username: !secret mqtt_user
+  password: !secret mqtt_password
+  discovery: true
+  #discovery_prefix: homeassistant
+    
+####################################################
+#                      Sensors                     #
+####################################################
+
+sensor:
+
+# - platform: authenticated 
+ 
+#Pi-Hole
+# - platform: pi_hole
+#   host: !secret pihole_host
+#   monitored_conditions:
+#      - ads_blocked_today
+#      - ads_percentage_today
+#      - dns_queries_today
+
+# SSL Certification
+# - platform: command_line
+#   name: SSL cert expiry
+#   unit_of_measurement: days
+#   scan_interval: 3600
+#   command: !secret sensor_ssl_command
+   
+ - platform: cert_expiry
+   host: !secret main_url
+
+####################################################
+#                  Spped Test                      #
+####################################################
+
+speedtestdotnet:
+  scan_interval:
+    minutes: 30
+  monitored_conditions:
+    - ping
+    - download
+    - upload
+
+fastdotcom:
+  scan_interval:
+      minutes: 30

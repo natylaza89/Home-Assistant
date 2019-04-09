@@ -1,0 +1,96 @@
+###############################################################################
+#   @author         :   Naty Laza
+#   @date           :   04/01/2019
+#   @package        :   Birthday
+#   @description    :   Birthdays Notification Via Telegram
+###############################################################################
+
+homeassistant:
+  customize:
+    sensor.matan_lazarovich_birthday:
+      hidden: true
+      icon: mdi:gift
+    sensor.moshe_lazarovich_birthday:
+      hidden: true
+      icon: mdi:gift
+    sensor.naty_lazarovich_birthday:
+      hidden: true
+      icon: mdi:gift
+    sensor.nofar_chen_birthday:
+      hidden: true
+      icon: mdi:gift
+    sensor.sarah_lazarovich_birthday:
+      hidden: true
+      icon: mdi:gift
+    automation.birthday_notification_via_telegram:
+     initial_state: 'on'
+     icon: mdi:gift
+     friendly_name: "Birthday Notification Via Telegram"
+
+####################################################
+#                   Sensors                        #
+####################################################
+
+sensor:
+  - platform: command_line
+    name: Nofar Chen birthday
+    unit_of_measurement: days
+    scan_interval: 3600
+    command: !secret nofar_birthday
+    
+  - platform: command_line
+    name: Naty Lazarovich birthday
+    unit_of_measurement: days
+    scan_interval: 3600
+    command: !secret naty_birthday
+    
+  - platform: command_line
+    name: Matan Lazarovich birthday
+    unit_of_measurement: days
+    scan_interval: 3600
+    command: !secret matan_birthday
+    
+  - platform: command_line
+    name: Moshe Lazarovich birthday
+    unit_of_measurement: days
+    scan_interval: 3600
+    command: !secret moshe_birthday
+    
+  - platform: command_line
+    name: Sarah Lazarovich birthday
+    unit_of_measurement: days
+    scan_interval: 3600
+    command: !secret sarah_birthday
+
+####################################################
+#                    Automation                    #
+####################################################
+
+automation:
+
+####################################################
+#                  Birthday Reminder               #
+####################################################
+
+- id: Birthday Notification Via Telegram
+  alias: Birthday Notification Via Telegram
+  trigger:
+  - platform: state
+    entity_id:
+      - sensor.naty_lazarovich_birthday
+      - sensor.matan_lazarovich_birthday
+      - sensor.nofar_chen_birthday
+      - sensor.sarah_lazarovich_birthday
+      - sensor.moshe_lazarovich_birthday
+  condition: 
+        - condition: template
+          value_template: "{{ trigger.to_state.state | int == 0 }}"
+  action:
+  - data_template:
+      title: '*Birthday Reminder*'
+      message: |
+        Today is a Specail day for Someone! 
+        Today is {{ trigger.to_state.name }}!
+        Don't Forget to wish Happy Birthday!
+    service: notify.all
+   

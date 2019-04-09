@@ -1,0 +1,19 @@
+###############################################################################
+#   @author         :   Naty Laza
+#   @date           :   04/01/2019
+#   @package        :   Media Player
+#   @description    :   Media Player Configuration
+###############################################################################
+
+############################################################
+#             Media Player Configuration                   #
+############################################################
+
+media_player:
+  
+#  - platform: alexa
+#    email: !secret amazon_email
+#    password: !secret amazon_password
+#    url: !secret amazon_url
+
+  - platform: cast

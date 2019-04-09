@@ -1,0 +1,382 @@
+#####################################################################################
+#   @author         :   Naty Laza
+#   @date           :   21/03/2019
+#   @package        :   Device Tracker
+#   @description    :   Device Tracker Via Traccar, TrackR , Configuration Of Zones,
+#                       Current Status, Notifying.
+#####################################################################################
+
+####################################################
+#                   HA Location                    #
+####################################################
+
+homeassistant:
+  latitude: !secret homeassistant_latitude
+  longitude: !secret homeassistant_longitude
+  elevation: !secret homeassistant_elevation
+
+####################################################
+#                   Customize                      #
+####################################################
+
+#homeassistant:
+  customize_domain:
+    automation:
+      initial_state: 'on'
+  
+  customize:
+
+####################################################
+#                    Device Tracker                #
+####################################################
+
+device_tracker:
+# TrackR 
+  - platform: trackr
+    username: !secret trackr_user
+    password: !secret trackr_password
+    consider_home: 1
+
+# Traccar
+  - platform: traccar
+    host: !secret traccar_server
+    port: !secret traccar_port
+    username: !secret traccar_username
+    password: !secret traccar_password
+
+# Edge Router 
+  #- platform: snmp
+  #  host: !secret router_ip
+  #  community: !secret community
+  #  baseoid: 1.3.6.1.2.1.4.22.1.2
+
+  #- platform: owntracks
+    #max_gps_accuracy: 50
+    #waypoints: True
+    #mqtt_topic: !secret mqtt_topic
+
+
+
+####################################################
+#                     Zones                        #
+####################################################
+
+zone:
+  - name: Ashkelon
+    latitude: !secret Ashkelon_latitude
+    longitude: !secret Ashkelon_longitude
+    icon: mdi:home-map-marker
+    radius: 400
+   
+  - name: Natanya
+    latitude: !secret Natanya_latitude
+    longitude: !secret Natanya_longitude
+    icon: mdi:home
+    radius: 400
+   
+  - name: College
+    latitude: !secret College_latitude
+    longitude: !secret College_longitude
+    icon: mdi:school
+    radius: 300
+    
+  - name: Home
+    latitude: !secret Home_latitude
+    longitude: !secret Home_longitude
+    icon: mdi:home
+    radius: 50
+    
+  - name: Nofar Work
+    latitude: !secret Nofar_Work_latitude
+    longitude: !secret Nofar_Work_longitude
+    icon: mdi:home
+    radius: 700
+    
+  - name: Hazi Hinam
+    latitude: !secret Hazi_Hinam_latitude
+    longitude: !secret Hazi_Hinam_longitude
+    icon: mdi:cart
+    radius: 50
+    
+  - name: Shufersal
+    latitude: !secret Shufersal_latitude
+    longitude: !secret Shufersal_longitude
+    icon: mdi:cart
+    radius: 50    
+
+####################################################
+#                   Binary Sensor                  #
+####################################################
+
+binary_sensor:
+  - platform: ping
+    host: !secret nofar_smartphone_ip
+    scan_interval: 10
+    name: "nofar_oneplus5t_connectivity"
+    count: 5
+
+  - platform: ping
+    host: !secret naty_smartphone_ip
+    scan_interval: 10
+    name: "naty_mia1_connectivity"
+    count: 5
+
+####################################################
+#                    Sensors                       #
+####################################################
+
+sensor:
+
+#Sensor for Real State Home/Away to serve alexa to say welcome once
+#Naty
+  - platform: template
+    sensors:
+       naty_current_status:
+         value_template: >-
+            {% if ( states.binary_sensor.naty_mia1_connectivity.state == 'on' or states.device_tracker.naty.state == 'home' ) %}
+               Home
+            {% else %}
+                {% if ( states.device_tracker.naty.state != 'not_home' )  %}
+                {{ states.device_tracker.naty.state }}
+                {% else %}
+                Away
+                {% endif %}
+            {% endif %}
+         friendly_name: 'Naty Current Status'  
+  #Nofar
+  - platform: template
+    sensors:
+       nofar_current_status:
+         value_template: >-
+            {% if ( states.binary_sensor.nofar_oneplus5t_connectivity.state == 'on' or states.device_tracker.nofar.state == 'home' ) %}
+               Home
+            {% else %}
+                {% if ( states.device_tracker.nofar.state != 'not_home') %}
+                {{ states.device_tracker.nofar.state }}
+                {% else %}
+                Away
+                {% endif %}
+            {% endif %}
+         friendly_name: 'Nofar Current Status'  
+
+### Smartphone Battery Level ###
+  - platform: template
+    sensors:
+   #Naty
+       battery_natylaza:
+         value_template: '{{ states.device_tracker.naty.attributes.battery_level }}'
+         friendly_name: 'Naty Phone Battery'
+         unit_of_measurement: "%"
+         device_class: "battery"
+   #Nofar
+       battery_nofar:
+         value_template: '{{ states.device_tracker.nofar.attributes.battery_level }}'
+         friendly_name: 'Nofar Phone Battery'
+         unit_of_measurement: "%"
+         device_class: "battery"
+
+####################################################
+#                   Automations                    #
+####################################################
+
+automation:
+
+#####################################################################
+#                        Notification                               #
+#####################################################################
+
+###################
+#       Naty      #
+###################
+
+- id: Naty is Home
+  alias: Naty is Home
+  trigger:
+  - entity_id: sensor.naty_current_status
+    platform: state
+    to: 'Home'
+  condition:
+  - condition: template
+    value_template: "{{ states.sensor.nofar_current_status.state != 'Home' }}"
+  action:
+  - data:
+      title: '*Nofari, I''m glad to notice you that*'
+      message: Naty has Arrived Home at {{ states('sensor.time') }}
+    service: notify.telehome_nofar
+  - service: input_boolean.turn_off
+    data:
+      entity_id: input_boolean.away_mode
+
+- id: Naty leave Home
+  alias: Naty leave Home
+  trigger:
+  - entity_id: sensor.naty_current_status
+    platform: state
+    from: 'Home'
+  condition:
+  - condition: template
+    value_template: "{{ states.sensor.nofar_current_status.state != 'home' }}"
+  action:
+  - data:
+      title: '*Nofari, I would like to update you that*'
+      message: Naty has Left Home at {{ states('sensor.time') }}
+    service: notify.telehome_nofar
+   
+- id: Naty is at College
+  alias: Naty is at College
+  trigger:
+  - entity_id: device_tracker.naty
+    event: enter
+    platform: zone
+    zone: zone.college
+  action:
+  - data:
+      message: Naty has arrived to College at {{ states('sensor.time') }}
+      title: '*Nofari, I would like to update you that*'
+    service: notify.telehome_nofar
+   
+- id: Naty leave College
+  alias: Naty leave College
+  trigger:
+  - entity_id: device_tracker.naty
+    event: leave
+    platform: zone
+    zone: zone.college
+  condition: 
+  - condition: state
+    entity_id: device_tracker.naty
+    state: 'not_home'
+    for:
+      minutes: 2
+  action:
+  - data:
+      title: '*Nofari, I would like to update you that*'
+      message: Naty has Left College at {{ states('sensor.time') }}
+    service: notify.telehome_nofar
+    
+- id: Naty arrived Ashkelon
+  alias: Naty arrived Ashkelon
+  trigger:
+  - entity_id: device_tracker.naty
+    event: enter
+    platform: zone
+    zone: zone.ashkelon
+  condition:
+  - condition: template
+    value_template: "{{ states.device_tracker.naty.state == 'Ashkelon' and states.device_tracker.nofar.state == 'Ashkelon' }}"
+  action:
+  - data:
+      title: '*Nofari, I would like to update you that*'
+      message: Naty has arived to Ashkelon at {{ states('sensor.time') }}
+    service: notify.telehome_nofar 
+
+####################
+#       Nofar      #
+####################
+
+- id: Nofar is Home
+  alias: Nofar is Home
+  trigger:
+  - entity_id: sensor.nofar_current_status
+    platform: state
+    to: 'Home'
+  condition:
+  - condition: template
+    value_template: "{{ states.sensor.naty_current_status.state != 'Home' }}"
+  action:
+  - data:
+      message: Nofar Arrived Home at {{ states('sensor.time') }}
+    service: notify.telehome_naty
+  - service: input_boolean.turn_off
+    data:
+      entity_id: input_boolean.away_mode
+
+- id: Nofar left Home
+  alias: Nofar left Home
+  trigger:
+  - entity_id: sensor.nofar_current_status
+    platform: state
+    from: 'Home'
+  condition:
+  - condition: template
+    value_template: "{{ states.sensor.naty_current_status.state != 'Home' }}"
+  action:
+  - data:
+      message: Nofar Left Home at {{ states('sensor.time') }}
+    service: notify.telehome_naty
+
+- id: Nofar_is at College
+  alias: Nofar is at College
+  trigger:
+  - entity_id: device_tracker.nofar
+    event: enter
+    platform: zone
+    zone: zone.college
+  action:
+  - data:
+      message: Nofar has arrived to College at {{ states('sensor.time') }}
+    service: notify.telehome_naty
+   
+- id: Nofar leave College
+  alias: Nofar leave College
+  trigger:
+  - entity_id: device_tracker.nofar
+    event: leave
+    platform: zone
+    zone: zone.college
+  condition: 
+  - condition: state
+    entity_id: device_tracker.nofar
+    state: 'not_home'
+    for:
+      minutes: 2
+  action:
+  - data:
+      message: Nofar has Left College at {{ states('sensor.time') }}
+    service: notify.telehome_naty
+   
+- id: Nofar is at Work
+  alias: Nofar is at Work
+  trigger:
+  - entity_id: device_tracker.nofar
+    event: enter
+    platform: zone
+    zone: zone.nofar_work
+  condition: []
+  action:
+  - data:
+      message: Nofar has arrived to Work at {{ states('sensor.time') }}
+    service: notify.telehome_naty
+   
+- id: Nofar left Work
+  alias: Nofar left Work
+  trigger:
+  - entity_id: device_tracker.nofar
+    event: leave
+    platform: zone
+    zone: zone.nofar_work
+  condition:
+  - condition: state
+    entity_id: device_tracker.nofar
+    state: 'not_home'
+    for:
+      minutes: 5
+  action:
+  - data:
+      message: Nofar has Left Work at {{ states('sensor.time') }}
+    service: notify.telehome_naty
+    
+- id: Nofar arrived Natanya
+  alias: Nofar arrived Natanya
+  trigger:
+  - entity_id: device_tracker.nofar
+    event: enter
+    platform: zone
+    zone: zone.natanya
+  condition:
+  - condition: template
+    value_template: "{{ states.device_tracker.nofar.state == 'Natanya' and states.device_tracker.naty.state != 'Natanya'}}"
+  action:
+  - data:
+      message: Nofar has arived to Natanya at {{ states('sensor.time') }}
+    service: notify.telehome_naty 

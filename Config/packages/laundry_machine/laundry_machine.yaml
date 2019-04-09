@@ -1,0 +1,134 @@
+#####################################################################################
+#   @author         :   Naty Laza
+#   @date           :   29/03/2019
+#   @package        :   Laundry Machine
+#   @description    :   Landry Machine's Smart Plug attributes.
+#####################################################################################
+
+####################################################
+#                   Customize                      #
+####################################################
+
+homeassistant:
+  customize_domain:
+    automation:
+      initial_state: 'on'
+  
+  customize:
+    switch.laundry_plug:
+      icon: mdi:washing-machine
+    binary_sensor.laundry_power:
+      icon: mdi:washing-machine
+####################################################
+#                   Binary-Sensor                  #
+####################################################
+
+binary_sensor:
+  - platform: template
+    sensors:
+      laundry_power:
+        friendly_name: "Laundry Power"
+        device_class: power
+        value_template: >-
+          {{ states.sensor.laundry_machine_power.state|float > 0 }}
+
+####################################################
+#                     Sensor                       #
+####################################################
+
+sensor:
+
+  - platform: mqtt
+    name: "Laundry Machine Current"
+    state_topic: "tele/laundryplug/SENSOR"
+    value_template: '{{ value_json["ENERGY"]["Current"] }}'
+    unit_of_measurement: "A"
+
+  - platform: mqtt
+    name: "Laundry Machine Power"
+    state_topic: "tele/laundryplug/SENSOR"
+    value_template: '{{ value_json["ENERGY"]["Power"] }}'
+    unit_of_measurement: "W"
+
+  - platform: mqtt
+    name: "Laundry Machine Voltage"
+    state_topic: "tele/laundryplug/SENSOR"
+    value_template: '{{ value_json["ENERGY"]["Voltage"] }}'
+    unit_of_measurement: "V"
+
+  - platform: mqtt
+    name: "Laundry Machine Energy Today"
+    state_topic: "tele/laundryplug/SENSOR"
+    value_template: '{{ value_json["ENERGY"]["Today"] }}'
+    unit_of_measurement: "kWh"
+
+  - platform: mqtt
+    name: "Laundry Machine Energy Yesterday"
+    state_topic: "tele/laundryplug/SENSOR"
+    value_template: '{{ value_json["ENERGY"]["Yesterday"] }}'
+    unit_of_measurement: "kWh"
+
+  - platform: mqtt
+    name: "Laundry Machine Energy Total"
+    state_topic: "tele/laundryplug/SENSOR"
+    value_template: '{{ value_json["ENERGY"]["Total"] }}'
+    unit_of_measurement: "kWh"
+    
+####################################################
+#                     Switch                       #
+####################################################
+
+switch:
+
+  - platform: mqtt
+    name: "Laundry Plug"
+    command_topic: "cmnd/laundryplug/power"
+    state_topic: "stat/laundryplug/POWER"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    retain: false
+
+####################################################
+#                   Automations                    #
+####################################################
+
+automation:
+
+#####################################################################
+#                        Notification                               #
+#####################################################################
+
+- id: alexa anounce that laundry machine has finished
+  alias: alexa anounce that laundry machine has finished
+  trigger:
+  - entity_id: sensor.laundry_machine_power
+    platform: state
+    to: '0'
+    for:
+      seconds: 30
+      minutes: 2
+  condition:
+  - condition: template
+    value_template: "{{ states.sensor.nofar_current_status.state == 'Home' or states.sensor.naty_current_status.state == 'Home'}}"
+  action:
+  - service: media_player.alexa_tts 
+    entity_id: media_player.naty_s_echo_dot
+    data:
+        message: "Laundry Machine Has Finished."
+
+- id: telegram notification that laundry machine has finished
+  alias: telegram notification that laundry machine has finished
+  trigger:
+  - entity_id: sensor.laundry_machine_power
+    platform: state
+    to: '0'
+    for:
+      seconds: 30
+      minutes: 2
+  action:
+  - service: notify.all
+    data_template:
+      title: '*Laundry Machine Alert*'
+      message: |
+                  Laundry Machine Has Finished! Don't forget to close it and open the drawer.

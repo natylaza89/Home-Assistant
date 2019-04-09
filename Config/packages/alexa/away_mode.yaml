@@ -1,0 +1,68 @@
+################################################################
+## Packages / Away Mode
+################################################################
+
+################################################
+## Customize
+################################################
+
+homeassistant:
+  customize:
+
+input_boolean:
+  away_mode:
+    name: Away Mode
+    initial: off
+    icon: mdi:home
+
+script:
+    away_mode_toggle:
+      sequence:    
+        - service: input_boolean.turn_on
+          data:
+            entity_id: input_boolean.away_mode
+    dont_forget:
+       sequence:  
+        - service: media_player.alexa_tts 
+          entity_id: media_player.naty_s_echo_dot
+          data:
+            message: "You forgot to close things, don't forget to close before you leave"
+    check_entities_before_leaving:
+       sequence:  
+        - service: media_player.alexa_tts 
+          entity_id: media_player.naty_s_echo_dot
+          data_template:
+                message: |                 
+                  {% macro away_mode() %}
+                  {% set domains = ['light', 'switch', 'binary_sensor'] %}
+                  {% for domain in domains -%}
+                    {% for item in states[domain] if (item is defined and item.state == 'on') -%}
+                      
+                    {% if (item is defined and item.state == 'on' and item.entity_id is not in ['binary_sensor.naty_mia1_connectivity','binary_sensor.nofar_oneplus5t_connectivity','binary_sensor.motion_sensor_158d0002151738','switch.lrtv_mute',
+                    'switch.hadockermonduplicati','switch.hadockermonha_dockermon','switch.hadockermonheimdall','switch.hadockermonhome_assistant','switch.hadockermonletsencrypt_nginx','switch.hadockermonmariadb','switch.hadockermonmosquitto',
+                    'switch.hadockermonportainer','switch.hadockermontasmoadmin','switch.hadockermontraccar','switch.hadockermonunifi','switch.hadockermonwatchtower']) -%}
+                  
+                    {{ item.name }} is {{ 'Open' if domain == 'binary_sensor' else 'On' }}  {%- if not loop.last %}, {% endif -%} {% endif -%}
+                      
+                    {% endfor %} 
+                  {%- endfor %}
+                  {% endmacro %}
+                  {{ away_mode() }}
+
+
+
+################################################
+## Automation
+################################################
+automation:
+- alias: away_mode
+  trigger:
+    - entity_id: input_boolean.away_mode
+      platform: state
+      to: 'on'
+  action:
+    - service: script.dont_forget
+    - delay: 00:00:04
+    - service: script.check_entities_before_leaving
+
+   

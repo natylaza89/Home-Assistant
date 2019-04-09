@@ -1,0 +1,204 @@
+###############################################################################
+#   @author         :   Naty Laza
+#   @date           :   04/01/2019
+#   @package        :   Persistence
+#   @description    :   Real State of Entities Before & After Restart HA
+###############################################################################
+
+####################################################
+#                   Customize                      #
+####################################################
+
+homeassistant:
+  customize_domain:
+    automation:
+      initial_state: 'on'
+      
+  customize:
+ 
+####################################################
+#                  Input Select                    #
+####################################################
+
+input_select:
+
+ fix_entity:
+  name: fix_entity
+  icon: mdi:apps
+  options:
+    - TV
+    - MiBox3
+    - FanLight
+
+ state_entity:
+  name: fix_entity
+  icon: mdi:creation
+  options:
+    - On State
+    - Off State
+
+
+####################################################
+#                   Sensors                        #
+####################################################
+sensor:
+# Restore/Save Real State of Entities    
+  - platform: persistence
+    entities: 
+       - sensor.lr_tv_status
+       - sensor.lr_mibox_status
+       - sensor.lr_ac_status
+       - sensor.br_fan_light_status
+       - sensor.br_fan_status
+       - sensor.alarm_control_panel_status
+       - sensor.naty_current_status
+       - sensor.nofar_current_status
+       - sensor.lr_ac_temp_sensor
+       - input_boolean.lr_ac_status
+       - input_boolean.away_mode
+       - switch.laundry_plug
+       - sensor.laundry_machine_power
+       - binary_sensor.laundry_power
+       - sensor.laundry_machine_power
+
+####################################################
+#                      Scripts                     #
+####################################################
+
+script:
+
+ fix_entity_state:
+  sequence:
+     - service: python_script.set_entity_state
+       data_template:
+         state: >
+            {% if is_state('input_select.state_entity', 'On State') %} on
+            {% elif is_state('input_select.state_entity', 'Off State') %} off
+            {% endif %}
+         entity_id: >
+            {% if is_state('input_select.fix_entity', 'TV') %} switch.lrtv_power
+            {% elif is_state('input_select.fix_entity', 'MiBox3') %} switch.lrmibox_power
+            {% elif is_state('input_select.fix_entity', 'FanLight') %} switch.brfan_light
+            {% endif %}
+
+####################################################
+#                    Automation                    #
+####################################################
+automation:
+
+#Alarm Real State After Home Assistant Start/Reboot 
+- id: Security Alarm after Home Assistant Start
+  alias: Security Alarm after Home Assistant Start
+  trigger:
+  - entity_id: sensor.alarm_control_panel_status
+    platform: state
+  condition:
+  - condition: state
+    entity_id: sensor.alarm_control_panel_status
+    state: 'armed_home'
+  action:
+  - service: alarm_control_panel.alarm_arm_home
+    data_template:
+        entity_id: alarm_control_panel.home_alarm
+        code: !secret alarm_code
+
+#LR TV Real State After Home Assistant Start/Reboot        
+- id: LR TV Real State After Restart Home Assistant
+  alias: LR TV Real State After Restart Home Assistant
+  trigger:
+  - entity_id: sensor.lr_tv_status
+    platform: state
+  condition:
+  - condition: state
+    entity_id: sensor.lr_tv_status
+    state: 'on'
+  action:
+     service: python_script.set_entity_state
+     data:
+         state: 'on'
+         entity_id: switch.lrtv_power
+
+#LR Mibox3 Real State After Home Assistant Start/Reboot  
+- id: LR Mibox3 Real State After Restart Home Assistant
+  alias: LR Mibox3 Real State After Restart Home Assistant
+  trigger:
+  - entity_id: sensor.lr_mibox_status
+    platform: state
+  condition:
+  - condition: state
+    entity_id: sensor.lr_mibox_status
+    state: 'on'
+  action:
+     service: python_script.set_entity_state
+     data:
+         state: 'on'
+         entity_id: switch.lrmibox_power
+
+#LR AC Real State After Home Assistant Start/Reboot  
+- id: LR AC Real State After Restart Home Assistant
+  alias: LR AC Real State After Restart Home Assistant
+  trigger:
+  - entity_id: sensor.lr_ac_status
+    platform: state
+  condition:
+  - condition: state
+    entity_id: sensor.lr_ac_status
+    state: 'on'
+  action:
+     service: python_script.set_entity_state
+     data:
+         state: 'on'
+         entity_id:
+         - switch.lrac_power
+         - input_boolean.lr_ac_status
+
+#BR Fan Light Real State After Home Assistant Start/Reboot  
+- id: BR Fan Light Real State After Restart Home Assistant
+  alias: BR Fan Light Real State After Restart Home Assistant
+  trigger:
+  - entity_id: sensor.br_fan_light_status
+    platform: state
+  condition:
+  - condition: state
+    entity_id: sensor.br_fan_light_status
+    state: 'on'
+  action:
+     service: python_script.set_entity_state
+     data:
+         state: 'on'
+         entity_id: switch.brfan_light
+
+#BR Fan Power Real State After Home Assistant Start/Reboot  
+- id: BR Fan Power Real State After Restart Home Assistant
+  alias: BR Fan Power Real State After Restart Home Assistant
+  trigger:
+  - entity_id: sensor.br_fan_status
+    platform: state
+  condition:
+  - condition: state
+    entity_id: sensor.br_fan_status
+    state: 'on'
+  action:
+     service: python_script.set_entity_state
+     data:
+         state: 'on'
+         entity_id: fan.bedroom_fan
+
+#############################################################################
+
+#LR AC Real State After Home Assistant Start/Reboot  
+- id: LR AC Input Boolean toggle via switch lrac power
+  alias: LR AC Input Boolean toggle via switch lrac power
+  trigger:
+  - entity_id: switch.lrac_power
+    platform: state
+  condition: []
+  action:
+  - service_template: >
+      {% if states.switch.lrac_power.state == 'on' %}
+        input_boolean.turn_on
+      {% else %}
+        input_boolean.turn_off
+      {% endif %}
+    entity_id: input_boolean.lr_ac_status
+

@@ -1,0 +1,13 @@
+####################################################
+#                   Customize                      #
+####################################################
+
+homeassistant:
+  customize:
+
+     light.gateway_light_7811dcf781f1:
+      friendly_name: Gateway Light
+     light.yeelight_mono1_f0b4290eb30b:
+      friendly_name: Office Light     
+
+

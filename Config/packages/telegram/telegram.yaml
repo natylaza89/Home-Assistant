@@ -1,0 +1,637 @@
+###############################################################################
+#   @author         :   Naty Laza
+#   @date           :   22/11/2018
+#   @package        :   Telegram Configuration
+#   @description    :   Telegram Bot with Allowed Chat,Commands To Control&Getters
+#                       of data from HA, Notifications
+###############################################################################
+
+####################################################
+#                   Customize                      #
+####################################################
+
+homeassistant:
+  customize_domain:
+    automation:
+      initial_state: 'on'
+
+  customize:
+
+####################################################
+#                     Telegram Bot                 #
+####################################################
+
+telegram_bot:
+  - platform: polling
+    api_key: !secret telegram_api_key
+    allowed_chat_ids:
+      - !secret telegram_naty_id
+      - !secret telegram_nofar_id
+      - !secret telegram_mipad_id
+     
+####################################################
+#                Telegram Bot  Notify              #
+####################################################
+
+notify:
+  - name: telehome_naty
+    platform: telegram
+    chat_id: !secret telegram_naty_id
+  - name: telehome_nofar
+    platform: telegram
+    chat_id: !secret telegram_nofar_id
+  - name: telehome_mipad
+    platform: telegram
+    chat_id: !secret telegram_mipad_id
+  - platform: group
+    name: all
+    services:
+      - service: telehome_naty
+      - service: telehome_nofar
+      - service: telehome_mipad
+
+####################################################
+#                   Telegram Commands              #
+####################################################
+automation:
+
+####################################################
+#                   Main Menu                      #
+####################################################
+- id: Telegram Start Command
+  alias: Telegram Start Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/start'
+  action:
+  - service: telegram_bot.send_message
+    data_template:
+       target: '{{ trigger.event.data.user_id }}'
+       title: "*Welcome! I'm Naty's bot.*"
+       message: |
+              Please use the custom commands in order to get what you wish for:
+       keyboard:
+          - '/info, /sensors, /alarm'
+          - '/tracker, /devices'
+
+####################################################
+#                 Sub Group Menu                   #
+####################################################
+
+#Information
+- id: Telegram Info Command
+  alias: Telegram Info Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/info'
+  action:
+  - service: telegram_bot.send_message
+    data_template:
+       target: '{{ trigger.event.data.user_id }}'
+       title: '*Information Control Pannel*' 
+       message: |
+            Please use the custom commands in order to get what you wish for:
+       keyboard:
+          - '/entities, /ssl '
+          - '/start'
+
+#Sensors
+- id: Telegram Sensors Command
+  alias: Telegram Sensors Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/sensors'
+  action:
+  - service: telegram_bot.send_message
+    data_template:
+       target: '{{ trigger.event.data.user_id }}'
+       title: '*Sensors Control Pannel*'       
+       message: |
+            Please use the custom commands in order to get what you wish for:
+       keyboard:
+          - '/sensor, /battery '
+          - ' /temperature , /humidity'
+          - '/start'
+
+#Alarm Control
+- id: Telegram Alarm Command
+  alias: Telegram Alarm Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/alarm'
+  action:
+  - service: telegram_bot.send_message
+    data_template:
+       target: '{{ trigger.event.data.user_id }}'
+       title: '*Alarm Control Pannel*'
+       message: |
+            Please use the custom commands in order to get what you wish for:
+       keyboard:
+          - '/alarmon, /alarmoff'
+          - '/start'
+
+#Device Tracker
+- id: Telegram Tracker Command
+  alias: Telegram Tracker Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/tracker'
+  action:
+  - service: telegram_bot.send_message
+    data_template:
+       target: '{{ trigger.event.data.user_id }}'
+       title: '*Device Tracker Control Pannel*'
+       message: |
+            Please use the custom commands in order to get what you wish for:
+       keyboard:
+          - '/naty, /nofar'
+          - '/start'
+
+#Devices
+- id: Telegram Devices Command
+  alias: Telegram Devices Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/devices'
+  action:
+  - service: telegram_bot.send_message
+    data_template:
+       target: '{{ trigger.event.data.user_id }}'
+       title: '*Devices Control Pannel*'
+       message: |
+            Please use the custom commands in order to get what you wish for:
+       keyboard:
+          - '/livingroom, /bedroom'
+          - '/start'
+
+#Living Room
+- id: Telegram LivingRoom Command
+  alias: Telegram LivingRoom Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/livingroom'
+  action:
+  - service: telegram_bot.send_message
+    data_template:
+       target: '{{ trigger.event.data.user_id }}'
+       title: '*Living Room Device Control*'
+       message: |
+            Please use the custom commands in order to get what you wish for:
+       keyboard:
+          - '/acon, /acoff, /tvon , /tvoff '
+          - '/miboxon, /miboxoff , /stripon, /stripoff'
+          - '/start , /devices'
+          
+#Bed Room
+- id: Telegram BedRoom Command
+  alias: Telegram BedRoom Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/bedroom'
+  action:
+  - service: telegram_bot.send_message
+    data_template:
+       target: '{{ trigger.event.data.user_id }}'
+       title: '*Devices Control Pannel*'
+       message: |
+            Please use the custom commands in order to get what you wish for:
+       keyboard:
+          - '/fanon , /fanoff, /fanlighton , '
+          - '/fanmode, /fanlightoff'
+          - '/start , /devices'
+         
+
+####################################################
+#                Actual Commands                   #
+####################################################
+
+#Entities
+- id: Telegram Entities Status Command
+  alias: Telegram Entities Status Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/entities'
+  action:
+  - service: telegram_bot.send_message
+    data_template:
+       target: '{{ trigger.event.data.user_id }}'
+       title: '*Home Entities Status*'
+       message: |
+            - Security Alarm is *{{ 'On' if states.sensor.alarm_control_panel_status.state == 'armed_home' else 'Off' }}*
+            - Xiaomi Plug is *{{ 'On' if states.switch.plug_158d0001bc0fe3.state == 'on' else 'Off' }}*
+            - Gateway Light is *{{ 'On' if states.light.gateway_light_7811dcf781f1.state == 'on' else 'Off' }}*
+            - Bedroom Fan Light is *{{ 'On' if states.switch.brfan_light.state == 'on' else 'Off' }}*
+            - Bedroom Fan  is *{{ 'On' if states.fan.bedroom_fan.state == 'on' else 'Off' }}*
+            - Office Light is *{{ 'On' if states.light.yeelight_white_f0b4290eb30b.state == 'on' else 'Off' }}* 
+            - Living Room Air Condtioner is *{{ 'On' if states.switch.lrac_power.state == 'on' else 'Off' }}*
+            - Living Room TV is *{{ 'On' if states.switch.lrtv_power.state == 'on' else 'Off' }}*
+            - Living Room Mi Box 3 is *{{ 'On' if states.switch.lrmibox_power.state == 'on' else 'Off' }}*
+
+#SSL
+- id: Telegram SSL Command
+  alias: Telegram SSL Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/ssl'
+  action:
+  - service: telegram_bot.send_message
+    data_template:
+       target: '{{ trigger.event.data.user_id }}'
+       title: '*Security SSL Status*'
+       message: |
+              SSL Certificate Expiry : *{{ states.sensor.ssl_certificate_expiry.state }}*
+              Make sure it will renew the certificate.
+#############################################################################################
+
+#Sensor Status
+- id: Telegram Sensors Status Command
+  alias: Telegram Sensors Status Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/sensor'
+  action:
+  - service: telegram_bot.send_message
+    data_template:
+       target: '{{ trigger.event.data.user_id }}'
+       title: '*Sensors Status*'
+       message: |
+            - Living Room Window Right Side is *{{ 'Open' if states.binary_sensor.door_window_sensor_158d0002417022.state == 'on' else 'Closed' }}*
+            - Living Room Window left Side is *{{ 'Open' if states.binary_sensor.door_window_sensor_158d0001e7ea4c.state == 'on' else 'Closed' }}*
+            - Kitchen Window is *{{ 'Open' if states.binary_sensor.door_window_sensor_158d0001e7baf5.state == 'on' else 'Closed' }}*
+            - Bedroom Window is *{{ 'Open' if states.binary_sensor.door_window_sensor_158d000242ea39.state == 'on' else 'Closed' }}*
+            - Laundry Room Window is *{{ 'Open' if states.binary_sensor.door_window_sensor_158d0001e7b21d.state == 'on' else 'Closed' }}*
+            - Work Room Window is *{{ 'Open' if states.binary_sensor.door_window_sensor_158d00027b235e.state == 'on' else 'Closed' }}*
+            - Laundry Water Leak Sensor is *{{ 'Wet' if states.binary_sensor.water_leak_sensor_158d0002704bbd.state == 'on' else 'Dry' }}* 
+            - Shower Water Leak Sensor is *{{ 'Wet' if states.binary_sensor.water_leak_sensor_158d0002564a0a.state == 'on' else 'Dry' }}* 
+            - Motion Sensor is *{{ 'Detected' if states.binary_sensor.motion_sensor_158d0002151738.state == 'on' else 'Clear' }}* 
+            - Smoke Detector is *{{ 'Detected' if states.binary_sensor.smoke_sensor_158d0002330c1f.state == 'on' else 'Clear' }}* 
+#Battery Status
+- id: Telegram Battery Status Command
+  alias: Telegram Battery Status Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/battery'
+  action:
+  - service: telegram_bot.send_message
+    data_template:
+       target: '{{ trigger.event.data.user_id }}'
+       title: '*Sensors Battery Status*'
+       message: |
+            - Living Room Left Window Sensor is *{{ states.binary_sensor.door_window_sensor_158d0001e7ea4c.attributes.battery_level }}%*
+            - Living Room Right Window Sensor is *{{ states.binary_sensor.door_window_sensor_158d0002417022.attributes.battery_level }}%*
+            - Bedroom Window Sensor is *{{ states.binary_sensor.door_window_sensor_158d000242ea39.attributes.battery_level }}%*
+            - Kitchen Window Sensor is *{{ states.binary_sensor.door_window_sensor_158d0001e7baf5.attributes.battery_level }}%*
+            - Laundry Room Window Sensor is *{{ states.binary_sensor.door_window_sensor_158d0001e7b21d.attributes.battery_level }}%*
+            - Work Room Window Sensor is *{{ states.binary_sensor.door_window_sensor_158d00027b235e.attributes.battery_level }}%*
+            - Living Room Temperature Sensor is *{{ states.sensor.temperature_158d000244da18.attributes.battery_level }}%*
+            - Bedroom Temperature Sensor is *{{ states.sensor.temperature_158d00023a09d6.attributes.battery_level }}%*
+            - Kitchen Temperature Sensor is *{{ states.sensor.temperature_158d0002323847.attributes.battery_level }}%*
+            - Work Room Temperature Sensor is *{{ states.sensor.temperature_158d00023279f9.attributes.battery_level }}%*
+            - Xiaomi Motion Sensor is *{{ states.binary_sensor.motion_sensor_158d0002151738.attributes.battery_level }}%*
+            - Xiaomi BR Switch is *{{ states.binary_sensor.switch_158d00023f4225.attributes.battery_level }}%*
+            - Xiaomi Office Switch is *{{ states.binary_sensor.switch_158d00023d1c41.attributes.battery_level }}%*
+            - Laundry Water Leak Sensor is *{{ states.binary_sensor.water_leak_sensor_158d0002704bbd.attributes.battery_level }}%*
+            - Shower Water Leak Sensor is *{{ states.binary_sensor.water_leak_sensor_158d0002564a0a.attributes.battery_level }}%*
+            - Smoke Detector is *{{ states.binary_sensor.smoke_sensor_158d0002330c1f.attributes.battery_level }}%*
+#Temperature Status
+- id: Telegram Temperature Status Command
+  alias: Telegram Temperature Status Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/temperature'
+  action:
+  - service: telegram_bot.send_message
+    data_template:
+       target: '{{ trigger.event.data.user_id }}'
+       title: '*Temperature Status*'
+       message: |
+            - Living Room Temperature is *{{ states.sensor.temperature_158d000244da18.state }}°C*
+            - Bedroom Temperature is *{{ states.sensor.temperature_158d00023a09d6.state }}°C*
+            - Kitchen Temperature is *{{ states.sensor.temperature_158d0002323847.state }}°C*
+            - Work Room Temperature is *{{ states.sensor.temperature_158d00023279f9.state }}°C*
+            
+#Humidity Status
+- id: Telegram Humidity Status Command
+  alias: Telegram Humidity Status Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/humidity'
+  action:
+  - service: telegram_bot.send_message
+    data_template:
+       target: '{{ trigger.event.data.user_id }}'
+       title: '*Humidity Status*'
+       message: |
+            - Living Room Humidity is *{{ states.sensor.humidity_158d000244da18.state }}%*
+            - Bedroom Humidity is *{{ states.sensor.humidity_158d00023a09d6.state }}%*
+            - Kitchen Humidity is *{{ states.sensor.humidity_158d0002323847.state }}%*
+            - Work Room Humidity is *{{ states.sensor.humidity_158d00023279f9.state }}%*
+##################################################################################################
+#Alarm On
+- id: Telegram Alarm On Command
+  alias: Telegram Alarm On Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/alarmon'
+  action:
+  - service: telegram_bot.send_message
+    data_template:
+       target: '{{ trigger.event.data.user_id }}'
+       title: '*Security Alarm Status*'
+       message: |
+            You turned on the Alarm.
+            Be Aware now that the Alarm system is online and every sensor
+            will trigger it on.
+  - service: alarm_control_panel.alarm_arm_home
+    data_template:
+        entity_id: alarm_control_panel.home_alarm
+        code: !secret alarm_code
+  - service: script.alarm_home_power_state
+
+#Alarm Off
+- id: Telegram Alarm Off Command
+  alias: Telegram Alarm Off Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/alarmoff'
+  action:
+  - service: telegram_bot.send_message
+    data_template:
+       target: '{{ trigger.event.data.user_id }}'
+       title: '*Security Alarm Status*'
+       message: |
+            You turned Off the Alarm.
+            Be Aware now that the Alarm system is offline
+            and you get notification for each sensor individual.
+  - service: alarm_control_panel.alarm_disarm
+    data_template:
+        entity_id: alarm_control_panel.home_alarm
+        code: !secret alarm_code
+  - service: script.alarm_home_power_state
+################################################################################################
+
+#Naty Status
+- id: Telegram Naty Status Command
+  alias: Telegram Naty Status Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/naty'
+  action:
+  - service: telegram_bot.send_message
+    data_template:
+       target: '{{ trigger.event.data.user_id }}'
+       title: '*Naty Status*'
+       message: |
+            - TrackR's Battery:  *{{ states.device_tracker.naty.attributes.battery_level }}%*
+            - Device Tracker Status: *{{ states.sensor.naty_current_status.state }}*
+            - Latitude: {{ states.device_tracker.naty.attributes.latitude }}
+            - Longitude: {{ states.device_tracker.naty.attributes.longitude }}
+
+#Nofar Status
+- id: Telegram Nofar Status Command
+  alias: Telegram Nofar Status Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/nofar'
+  action:
+  - service: telegram_bot.send_message
+    data_template:
+       target: '{{ trigger.event.data.user_id }}'
+       title: '*Nofar Status*'
+       message: |
+            - TrackR's Battery:  *{{ states.device_tracker.nofar.attributes.battery_level }}%*
+            - Device Tracker Status: *{{ states.sensor.nofar_current_status.state }}*
+            - Latitude: {{ states.device_tracker.nofar.attributes.latitude }}
+            - Longitude: {{ states.device_tracker.nofar.attributes.longitude }}
+#################################################################################################
+
+####################################################
+#          Living Room Control Pannel              #
+####################################################
+        
+#LR AC Power On
+- id: Telegram AC Power On Command
+  alias: Telegram AC Power On Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/acon'
+  action:
+  - service: switch.toggle
+    entity_id: switch.lrac_power
+
+#LR AC Power Off
+- id: Telegram AC Power Off Command
+  alias: Telegram AC Power Off Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/acoff'
+  action:
+  - service: switch.toggle
+    entity_id: switch.lrac_power
+    
+#LR TV Power On
+- id: Telegram TV Power On Command
+  alias: Telegram TV Power On Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/tvon'
+  action:
+  - service: switch.toggle
+    entity_id: switch.lrtv_power
+
+#LR TV Power Off
+- id: Telegram TV Power Off Command
+  alias: Telegram TV Power Off Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/tvoff'
+  action:
+  - service: switch.toggle
+    entity_id: switch.lrtv_power
+
+#LR Mi Box Power On
+- id: Telegram Mi Box Power On Command
+  alias: Telegram Mi Box Power On Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/miboxon'
+  action:
+  - service: switch.toggle
+    entity_id: switch.lrmibox_power
+
+#LR Mi Box Power Off
+- id: Telegram Mi Box Power Off Command
+  alias: Telegram Mi Box Power Off Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/miboxoff'
+  action:
+  - service: switch.toggle
+    entity_id: switch.lrmibox_power
+
+#LR Strip Led Power On
+- id: Telegram Strip Led Power On Command
+  alias: Telegram Strip Led Power On Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/stripon'
+  action:
+  - service: switch.toggle
+    entity_id: switch.lrtv_stripled_power
+
+#LR Mi Box Power Off
+- id: Telegram Strip Led Power Off Command
+  alias: Telegram Strip Led Power Off Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/stripoff'
+  action:
+  - service: switch.toggle
+    entity_id: switch.lrtv_stripled_power
+
+####################################################
+#             Bed Room Control Pannel              #
+####################################################
+        
+#BR Fan Power On
+- id: Telegram Fan Power On Command
+  alias: Telegram Fan Power On Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/fanon'
+  action:
+  - service: fan.toggle
+    entity_id: fan.bedroom_fan
+
+#BR Fan Power Off
+- id: Telegram Fan Power Off Command
+  alias: Telegram Fan Power Off Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/fanoff'
+  action:
+  - service: fan.toggle
+    entity_id: fan.bedroom_fan
+
+#BR Fan Light Power On
+- id: Telegram Fan Light Power On Command
+  alias: Telegram Fan Light Power On Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/fanlighton'
+  action:
+  - service: switch.toggle
+    entity_id: switch.brfan_light
+
+#BR Fan Light Power Off
+- id: Telegram Fan Light Power Off Command
+  alias: Telegram Fan Light Power Off Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/fanlightoff'
+  action:
+  - service: switch.toggle
+    entity_id: switch.brfan_light
+
+#BR Fan Mode
+- id: Telegram Fan Mode Command
+  alias: Telegram Fan Mode Command
+  initial_state: on
+  trigger:
+  - platform: event
+    event_type: telegram_command
+    event_data:
+        command: '/fanmode'
+  action:
+  - service: input_select.select_next
+    entity_id: input_select.br_fan

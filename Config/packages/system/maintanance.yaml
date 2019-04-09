@@ -1,0 +1,130 @@
+###############################################################################
+#   @author         :   Naty Laza
+#   @date           :   04/01/2019
+#   @package        :   Maintanace
+#   @description    :   Shell Commands, Script, Automation for Maintanace , 
+#                       SSL Renew Automation and Notification
+###############################################################################
+
+####################################################
+#                   Customize                      #
+####################################################
+
+homeassistant:
+  customize_domain:
+    automation:
+      initial_state: 'on'
+  
+  customize:
+  #Scripts
+     script.restart_home_assistant:
+      icon: mdi:restart
+      can_cancel: false
+     script.reboot_os:
+      icon: mdi:restart
+      can_cancel: false
+     script.purge_db :
+      icon: mdi:database
+      can_cancel: false
+
+####################################################
+#                 Shell Commands                   #
+####################################################
+shell_command:
+  os_reboot: !secret os_reboot
+
+####################################################
+#                      Scripts                     #
+####################################################
+script:
+
+#Operation System Scripts
+ restart_home_assistant:
+  alias: Restart Home Assistant
+  sequence:
+    - alias: Restart Home Assistant
+      service: homeassistant.restart
+
+ reboot_os:
+   alias: 'Restart the server'
+   sequence:
+     - service: shell_command.os_reboot
+
+#Database System Scripts    
+ purge_db:
+   alias: 'Purge Home Assistant Database'
+   sequence:
+     - service: recorder.purge 
+
+####################################################
+#                    Automation                    #
+####################################################
+
+#HA Version Update
+automation:
+- id: HA New Version
+  alias: HA New Version
+  initial_state: 'on'
+  trigger:
+  - platform: template
+    value_template: "{{ ( states('sensor.ha_pypi_version') != states('sensor.current_version') ) and ( states('sensor.ha_pypi_version') != 'unavailable' ) }}"
+  - platform: template
+    value_template: "{{ ( states('sensor.ha_github_version') != states('sensor.current_version') ) and ( states('sensor.ha_github_version') != 'unavailable' )  }}"
+  action:
+  - service: notify.telehome_naty
+    data_template:
+          message: >
+            Home Assistant {{ trigger.to_state.state }} is now available on {{ trigger.to_state.name.split(' ')[0] }}
+            
+#SSL Notifications
+- id: Renew SSL Certificate
+  alias: Renew SSL Certificate
+  initial_state: on
+  trigger:
+      platform: numeric_state
+      entity_id: sensor.ssl_certificate_expiry
+      below: 25
+  action:
+    - service: notify.telehome_naty
+      data:
+        title: '*SSL Renew Alert*'
+        message: |
+            SSL need to be renewed.
+            Please make sure it with /ssl
+
+- id: SSL certificate expiry notification
+  alias: SSL certificate expiry notification
+  initial_state: on
+  trigger:
+      platform: numeric_state
+      entity_id: sensor.ssl_certificate_expiry
+      below: 21
+  action:
+  - service: notify.telehome_naty
+    data:
+        title: '*SSL Renew Alert*'
+        message: |
+            Warning - SSL certificate expires in 21 days and has not been automatically renewed.
+            Please take action inorder to resolve this.
+
+#Automation Count           
+- id: Check Automations Status
+  alias: Check Automations Status
+  initial_state: on
+  trigger:
+      - platform: homeassistant
+        event: start
+
+  action:
+      - delay: 00:01:00
+      - service: python_script.all_automations_counter
+      - service: python_script.on_automations_counter
+      - delay: 00:00:30
+      - condition: template
+        value_template: "{{ states('sensor.automation_on') != states('sensor.automation_all') }}"
+      - service: persistent_notification.create
+        data:
+          notification_id: "Automations_counter"
+          title: "Automations Alert"
+          message: "Some Automations are Disabled."
+

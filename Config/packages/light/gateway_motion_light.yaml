@@ -1,0 +1,57 @@
+###############################################################################
+#   @author         :   Naty Laza
+#   @date           :   04/01/2019
+#   @package        :   Xiaomi Gateway as Night Light
+#   @description    :   Turn On\Off when motion detect.
+###############################################################################
+
+####################################################
+#                    Automation                    #
+####################################################
+
+automation:
+
+####################################################
+#         Gateway Light With Motion Sensor         #
+####################################################
+
+- id: Open Gateway Light when Motion Deteced
+  alias: Open Gateway Light when Motion Deteced
+  trigger:
+  - entity_id: binary_sensor.motion_sensor_158d0002151738
+    platform: state
+    to: 'on'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: light.gateway_light_7811dcf781f1
+        state: 'off'
+      - condition: time
+        before: '07:00:00'
+        after: '22:00:00'
+  action:
+  - service: light.turn_on
+    entity_id: light.gateway_light_7811dcf781f1
+    data:
+       brightness_pct: 50
+       color_name: white
+
+- id: Close Gateway Light when Motion Deteced Passed
+  alias: Close Gateway Light when Motion Deteced Passed
+  trigger:
+  - entity_id: binary_sensor.motion_sensor_158d0002151738
+    platform: state
+    to: 'off'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: light.gateway_light_7811dcf781f1
+        state: 'on'
+      - condition: time
+        before: '07:30:00'
+        after: '22:00:00'
+  action:
+  - service: light.turn_off
+    entity_id: light.gateway_light_7811dcf781f1

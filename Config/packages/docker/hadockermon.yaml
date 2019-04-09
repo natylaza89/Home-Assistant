@@ -1,0 +1,75 @@
+
+ 
+shell_command:
+  restart_hass: 'curl http://127.0.0.1:8126/container/home-assistant/restart'
+
+switch:
+  platform: hadockermon
+  host: !secret hadockermon_server
+  port: !secret hadockermon_port
+  stats: true
+  prefix: hadockermon
+ 
+script:
+  restart_hass:
+    alias: Restart Home Assistant
+    sequence:
+      - service: shell_command.restart_hass
+
+automation:
+  - alias: Alert when a critical container goes offline
+    initial_state: 'on'
+    trigger:
+      - platform: state
+        entity_id: switch.hadockermonduplicati
+        to: 'off'
+      - platform: state
+        entity_id: switch.hadockermonha_dockermon
+        to: 'off'
+      - platform: state
+        entity_id: switch.hadockermonheimdall
+        to: 'off'
+      - platform: state
+        entity_id: switch.hadockermonhome_assistant
+        to: 'off'
+      - platform: state
+        entity_id: switch.hadockermonletsencrypt_nginx
+        to: 'off'
+      - platform: state
+        entity_id: switch.hadockermonmariadb
+        to: 'off'
+      - platform: state
+        entity_id: switch.hadockermonmosquitto
+        to: 'off'
+      - platform: state
+        entity_id: switch.hadockermonportainer
+        to: 'off'
+      - platform: state
+        entity_id: switch.hadockermontasmoadmin
+        to: 'off'
+      - platform: state
+        entity_id: switch.hadockermontraccar
+        to: 'off'
+      - platform: state
+        entity_id: switch.hadockermonunifi
+        to: 'off'
+      - platform: state
+        entity_id: switch.hadockermonwatchtower
+        to: 'off'
+    action:
+      - data_template:
+          title: '*Docker Alert*'
+          message: |
+                Docker container for *{{ trigger.to_state.name }}* is not running.
+                Please check the status of this container as some features may stop functioning.
+        service: notify.telehome_naty      
+      - service: persistent_notification.create
+        data_template:
+          notification_id: offline_container
+          title: Container Offline
+          message: >
+            Docker container for {{ trigger.to_state.name }} is not running. Please check the status of this container as some features may stop functioning.
+  
+     
+
+

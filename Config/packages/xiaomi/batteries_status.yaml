@@ -1,0 +1,113 @@
+###############################################################################
+#   @author         :   Naty Laza
+#   @date           :   16/12/2018
+#   @package        :   Battery Status
+#   @description    :   Xiaomi Devices, TrackR Devices
+###############################################################################
+
+####################################################
+#                   Customize                      #
+####################################################
+
+homeassistant:
+  customize:
+
+####################################################
+#                      Sensors                     #
+####################################################
+
+sensor:
+
+  - platform: template
+    sensors:
+### Sensor's Battery Level ###
+   #Water Sensor
+       #Laundry Room
+       water_sensor_laundry_batterylevel:
+         value_template: '{{ states.binary_sensor.water_leak_sensor_158d0002704bbd.attributes.battery_level }}'
+         friendly_name: 'Water Leak Laundry'
+         unit_of_measurement: "%"
+         device_class: "battery"
+       #Shower Room
+       water_sensor_shower_batterylevel:
+         value_template: '{{ states.binary_sensor.water_leak_sensor_158d0002564a0a.attributes.battery_level }}'
+         friendly_name: 'Water Leak Shower'
+         unit_of_measurement: "%"
+         device_class: "battery"
+#Window/Door Sensors 
+       lr_window_right_batterylevel:
+         value_template: '{{ states.binary_sensor.door_window_sensor_158d0002417022.attributes.battery_level }}'
+         friendly_name: 'Window LR Right Battery'
+         unit_of_measurement: "%"
+         device_class: "battery"
+       lr_window_left_batterylevel:
+         value_template: '{{ states.binary_sensor.door_window_sensor_158d0001e7ea4c.attributes.battery_level }}'
+         friendly_name: 'Window LR Left Battery'
+         unit_of_measurement: "%"
+         device_class: "battery"
+       bedroom_window_batterylevel:
+         value_template: '{{ states.binary_sensor.door_window_sensor_158d000242ea39.attributes.battery_level }}'
+         friendly_name: 'Bedroom Window Battery'
+         unit_of_measurement: "%"
+         device_class: "battery"
+       kitchen_window_batterylevel:
+         value_template: '{{ states.binary_sensor.door_window_sensor_158d0001e7baf5.attributes.battery_level }}'
+         friendly_name: 'Kitchen Window Battery'
+         unit_of_measurement: "%"
+         device_class: "battery"
+       laundry_window_batterylevel:
+         value_template: '{{ states.binary_sensor.door_window_sensor_158d0001e7b21d.attributes.battery_level }}'
+         friendly_name: 'Laundry Window Battery'
+         unit_of_measurement: "%"
+         device_class: "battery"
+       work_window_batterylevel:
+         value_template: '{{ states.binary_sensor.door_window_sensor_158d00027b235e.attributes.battery_level }}'
+         friendly_name: 'Work Room Window Battery'
+         unit_of_measurement: "%"
+         device_class: "battery"     
+#Temperature Sensors       
+       temperature_livingroom_batterylevel:
+         value_template: '{{ states.sensor.temperature_158d000244da18.attributes.battery_level }}'
+         friendly_name: 'Livingroom Temperature Battery'
+         unit_of_measurement: "%"
+         device_class: "battery"
+       temperature_bedroom_batterylevel:
+         value_template: '{{ states.sensor.temperature_158d00023a09d6.attributes.battery_level }}'
+         friendly_name: 'Bedroom Temperature Battery'
+         unit_of_measurement: "%"
+         device_class: "battery"
+       temperature_kitchen_batterylevel:
+         value_template: '{{ states.sensor.temperature_158d0002323847.attributes.battery_level }}'
+         friendly_name: 'Kitchen Temperature Battery'
+         unit_of_measurement: "%"
+         device_class: "battery"
+       temperature_workroom_batterylevel:
+         value_template: '{{ states.sensor.temperature_158d00023279f9.attributes.battery_level }}'
+         friendly_name: 'Work Room Temperature Battery'
+         unit_of_measurement: "%"
+         device_class: "battery"
+#Motion Sensors          
+       motion_sensor_batterylevel:
+         value_template: '{{ states.binary_sensor.motion_sensor_158d0002151738.attributes.battery_level }}'
+         friendly_name: 'Motion Sensor Battery'
+         unit_of_measurement: "%"
+         device_class: "battery"
+#Switch Sensors
+       #Bedroom
+       switch_br_batterylevel:
+         value_template: '{{ states.binary_sensor.switch_158d00023f4225.attributes.battery_level }}'
+         friendly_name: 'Switch Battery Level'
+         unit_of_measurement: "%"
+         device_class: "battery"
+       #Office Room
+       switch_office_batterylevel:
+         value_template: '{{ states.binary_sensor.switch_158d00023d1c41.attributes.battery_level }}'
+         friendly_name: 'Switch Battery Level'
+         unit_of_measurement: "%"
+         device_class: "battery"
+#Smoke Detector
+       smoke_detector_batterylevel:
+         value_template: '{{ states.binary_sensor.smoke_sensor_158d0002330c1f.attributes.battery_level }}'
+         friendly_name: 'Smoke Detector Battery Level'
+         unit_of_measurement: "%"
+         device_class: "battery"

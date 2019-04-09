@@ -1,0 +1,330 @@
+###############################################################################
+#   @author         :   Naty Laza
+#   @date           :   04/01/2019
+#   @package        :   Xiaomi Devices and Alarm Control
+#   @description    :   Xiaomi Gateway, Sensors and Alarm Control Pannel
+###############################################################################
+
+####################################################
+#                   Customize                      #
+####################################################
+
+homeassistant:
+  customize:
+#Scripts  
+     script.run_alarm:
+      icon: mdi:alarm-light
+      can_cancel: false
+     script.aqara_add_new_device:
+      icon: mdi:plus-circle
+      can_cancel: false
+#Windows Sensors
+     binary_sensor.door_window_sensor_158d0002417022:
+      device_class: "window"
+      friendly_name: LR Right Window
+     binary_sensor.door_window_sensor_158d0001e7ea4c:
+      device_class: "window"
+      friendly_name: LR Left Window
+     binary_sensor.door_window_sensor_158d00027b235e:
+      device_class: "window"
+      friendly_name: Workroom Window
+     binary_sensor.door_window_sensor_158d0001e7b21d:
+      device_class: "window"
+      friendly_name: Laundry Window
+     binary_sensor.door_window_sensor_158d0001e7baf5:
+      device_class: "window"
+      friendly_name: Kitchen Window
+     binary_sensor.door_window_sensor_158d000242ea39:
+      device_class: "window"
+      friendly_name: Bedroom Window
+#Temperatures Sensors
+     sensor.temperature_158d000244da18:
+      icon: mdi:sofa
+     sensor.temperature_158d0002323847:
+      icon: mdi:fridge
+     sensor.temperature_158d00023a09d6:
+      icon: mdi:bed-empty
+     sensor.temperature_158d00023279f9:
+      icon: mdi:briefcase
+#Humidity Sensors
+     sensor.humidity_158d000244da18:
+      icon: mdi:sofa
+     sensor.humidity_158d0002323847:
+      icon: mdi:fridge
+     sensor.humidity_158d00023a09d6:
+      icon: mdi:bed-empty
+     sensor.humidity_158d00023279f9:
+      icon: mdi:briefcase
+
+####################################################
+#                   Alarm Control                  #
+####################################################
+
+alarm_control_panel:
+  - platform: manual
+    name: Home Alarm
+    code: !secret alarm_code
+    pending_time: 30
+    delay_time: 20
+    trigger_time: 4
+    disarmed:
+      trigger_time: 0
+   # armed_home:
+   #   pending_time: 0
+   #   delay_time: 0
+
+####################################################
+#                Xiaomi Gateway                    #
+#################################################### 
+
+xiaomi_aqara:
+  discovery_retry: 5
+  gateways:
+    - key: !secret aqara_key
+
+####################################################
+#                      Sensors                     #
+####################################################
+
+sensor:
+
+  - platform: template
+    sensors:
+# Alarm Control Pannel Status
+       alarm_control_panel_status:
+         value_template: >-
+            {% if is_state('alarm_control_panel.home_alarm', 'armed_home') %}
+               armed_home
+            {% else %}
+              disarmed
+            {% endif %}
+         friendly_name: 'Alarm Control Panel Status'      
+  
+####################################################
+#                      Scripts                     #
+####################################################
+
+script:
+#Alarm Configuration 
+ run_alarm:
+  alias: 'Run Alarm'
+  sequence:
+    - service: light.turn_on
+      entity_id: light.gateway_light_7811dcf781f1
+      data:
+        brightness: 255
+        hs_color: [0, 100]
+    - service: xiaomi_aqara.play_ringtone
+      data:
+        gw_mac: !secret aqara_gw_mac
+        ringtone_id: 7
+        ringtone_vol: 8
+    - delay:
+        seconds: 20
+    - service: xiaomi_aqara.stop_ringtone
+      data:
+        gw_mac: !secret aqara_gw_mac
+    - service: light.turn_off
+      entity_id: light.gateway_light_7811dcf781f1
+#Add new Device
+ aqara_add_new_device:
+  alias: 'Aqara Add New Device'
+  sequence:
+    - service: xiaomi_aqara.add_device
+      data:
+        gw_mac: !secret aqara_gw_mac
+    - service: persistent_notification.create
+      data:
+          notification_id: "Aqara_Add_New_Device"
+          title: "Aqara Add New Device"
+          message: "Now You Have to restart HA"
+
+####################################################
+#                    Automation                    #
+####################################################
+
+automation:
+
+####################################################
+#    Home Security Alarm Disarmed Notify Status    #
+####################################################
+
+- alias: Notify Via Telegram Window Sensor Current Status
+  trigger:
+  - entity_id: binary_sensor.door_window_sensor_158d0002417022
+    platform: state
+  - entity_id: binary_sensor.door_window_sensor_158d0001e7ea4c
+    platform: state
+  - entity_id: binary_sensor.door_window_sensor_158d00027b235e
+    platform: state  
+  - entity_id: binary_sensor.door_window_sensor_158d0001e7b21d
+    platform: state
+  - entity_id: binary_sensor.door_window_sensor_158d0001e7baf5
+    platform: state
+  - entity_id: binary_sensor.door_window_sensor_158d000242ea39
+    platform: state
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: alarm_control_panel.home_alarm
+        state: 'disarmed'
+      - condition: template
+        value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+      - condition: or
+        conditions:      
+            - condition: template
+              value_template: "{{ states.sensor.nofar_current_status.state != 'home' and states.sensor.naty_current_status.state == 'home' }}"
+            - condition: template
+              value_template: "{{ states.sensor.naty_current_status.state != 'home' and states.sensor.nofar_current_status.state == 'home' }}"
+  action:
+  - service: notify.telehome_naty
+    data_template:
+      title: '*Home Security Alert*'
+      message: |
+                  {{ trigger.from_state.name }} is *{{ 'Open' if trigger.to_state.state == 'on' else 'Closed' }}*
+
+####################################################
+#       Home Security Water Sensor Dry/Wet         #
+####################################################
+
+- alias: Notify When Water Sensor Is Wet
+  trigger:
+    - entity_id: binary_sensor.water_leak_sensor_158d0002564a0a
+      platform: state
+      to: 'on'
+    - entity_id: binary_sensor.water_leak_sensor_158d0002704bbd
+      platform: state
+      to: 'on'
+  action:
+  - data_template:
+      title: '*Home Security Alert*'
+      message: |
+                  There is a Water Leak! {{ trigger.from_state.name }} is *Wet!*
+                  Make Sure to Check What is the Damages of it.
+    service: notify.all
+
+####################################################
+#             Home Security Smoke Detector         #
+####################################################
+
+- alias: Notify When Smoke Detector Is Active
+  trigger:
+  - entity_id: binary_sensor.smoke_sensor_158d0002330c1f
+    platform: state
+    to: 'on'
+  action:
+  - data_template:
+      title: '*Home Security Alert*'
+      message: |
+                  There is Smoke/Fire! {{ trigger.from_state.name }} is *Active!*
+                  Make Sure to Check What is the Damages of it.
+    service: notify.all
+
+####################################################
+#       Home Security Alarm Armed Automation       #
+####################################################
+
+- alias: Alarm on When window or motion is on
+  trigger:
+  - entity_id: binary_sensor.door_window_sensor_158d0002417022
+    platform: state
+    to: 'on'
+  - entity_id: binary_sensor.door_window_sensor_158d0001e7ea4c
+    platform: state
+    to: 'on'
+  - entity_id: binary_sensor.door_window_sensor_158d00027b235e
+    platform: state  
+    to: 'on'
+  - entity_id: binary_sensor.door_window_sensor_158d0001e7b21d
+    platform: state
+    to: 'on'
+  - entity_id: binary_sensor.door_window_sensor_158d0001e7baf5
+    platform: state
+    to: 'on'
+  - entity_id: binary_sensor.door_window_sensor_158d000242ea39
+    platform: state
+    to: 'on'
+  - entity_id: binary_sensor.motion_sensor_158d0002151738
+    platform: state
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: alarm_control_panel.home_alarm
+    state: 'armed_home'
+  action:
+  - service: notify.telehome_naty
+    data_template:  
+      title: '*Home Security Alert*'
+      message: |        
+                  !!! Alarm is ON !!!
+                  {{ trigger.from_state.name }} opened and triggered the alarm!
+                  Sensors Status:
+                  - Living Room Window Right Side is *{{ 'Open' if states.binary_sensor.lr_window_right.state == 'on' else 'Closed' }}*
+                  - Living Room Window left Side is *{{ 'Open' if states.binary_sensor.lr_window_left.state == 'on' else 'Closed' }}*
+                  - Kitchen Window is *{{ 'Open' if states.binary_sensor.kitchen_window.state == 'on' else 'Closed' }}*
+                  - Bedroom Window is *{{ 'Open' if states.binary_sensor.bedroom_window.state == 'on' else 'Closed' }}*
+                  - Laundry Room Window is *{{ 'Open' if states.binary_sensor.laundry_window.state == 'on' else 'Closed' }}* 
+                  - Work Room Window is *{{ 'Open' if states.binary_sensor.workrook_window.state == 'on' else 'Closed' }}*
+                  - Motion Sensor is *{{ 'Detected' if states.binary_sensor.motion_sensor.state == 'on' else 'Clear' }}*
+  - service: script.run_alarm
+
+####################################################
+#       Home Security Alarm Armed Auto ON\OFF      #
+####################################################
+
+- id: Auto Enable Alarm When We Both Away Mode
+  alias: Auto Enable Alarm When We Both Away Mode
+  trigger:
+  - entity_id: sensor.naty_current_status
+    platform: state
+    from: 'Home'
+  - entity_id: sensor.nofar_current_status
+    platform: state
+    from: 'Home'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: alarm_control_panel.home_alarm
+        state: 'disarmed'
+      - condition: template
+        value_template: "{{ states.device_tracker.naty.state != 'home' and states.device_tracker.nofar.state != 'home' }}"
+  action:
+  - data:
+      title: '*Home Security Alert*'
+      message: |
+          Alarm is Auto Enabled Which means you both Away from home.
+          Make sure you didn't forget to close something by sending a message
+          to me with /start
+    service: notify.telehome_naty
+  - service: alarm_control_panel.alarm_arm_home
+    data_template:
+        entity_id: alarm_control_panel.home_alarm
+        code: !secret alarm_code
+  - service: script.alarm_home_power_state
+
+- id: Auto Disable Alarm When one of use at Home
+  alias: Auto Disable Alarm When one of use at Home
+  trigger:
+  - entity_id: sensor.naty_current_status
+    platform: state
+    to: 'Home'
+  - entity_id: sensor.nofar_current_status
+    platform: state
+    to: 'Home'
+  condition:
+  - condition: state
+    entity_id: alarm_control_panel.home_alarm
+    state: 'armed_home'
+  action:
+  - data:
+      title: '*Home Security Alert*'
+      message: |
+          Alarm is Auto Disable Which means one of you at home.
+    service: notify.telehome_naty
+  - service: alarm_control_panel.alarm_disarm
+    data_template:
+        entity_id: alarm_control_panel.home_alarm
+        code: !secret alarm_code
+  - service: script.alarm_home_power_state

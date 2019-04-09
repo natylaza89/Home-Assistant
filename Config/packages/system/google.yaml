@@ -1,0 +1,45 @@
+###################################################################################
+#   @author         :   Naty Laza
+#   @date           :   04/01/2019
+#   @package        :   Google Services
+#   @description    :   Google Calendar , Text to speech
+###################################################################################
+
+####################################################
+#                   Customize                      #
+####################################################
+
+homeassistant:
+  customize:
+     sensor.holiday_status:
+      icon: mdi:account-supervisor-circle
+
+####################################################
+#                  Text to speech                  #
+####################################################  
+tts:
+  - platform: google
+    
+####################################################
+#                     Google Calendar              #
+####################################################
+google:
+  client_id: !secret google_calendar_client_id
+  client_secret: !secret google_calendar_client_secret
+
+####################################################
+#                      Sensors                     #
+####################################################
+sensor:
+# Holidays
+  - platform: template
+    sensors:
+       holiday_status:
+         value_template: >-
+            {% if is_state('calendar.jewish_holidays', 'on') %}
+               {{ states.calendar.jewish_holidays.attributes.message }}
+            {% else %}
+              Normal Day
+            {% endif %}
+         friendly_name: 'Holiday'
+

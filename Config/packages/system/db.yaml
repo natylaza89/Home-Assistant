@@ -1,0 +1,189 @@
+###############################################################################
+#   @author         :   Naty Laza
+#   @date           :   22/11/2018
+#   @package        :   Recorder , DB Sensors, History , Logger, Logbook,
+#   @description    :   Database Configuration and History of entities
+###############################################################################
+
+recorder:
+  purge_keep_days: 5
+  db_url: !secret recorder_db_url
+  include:
+    entities:
+       - device_tracker.naty
+       - device_tracker.nofar
+       - binary_sensor.naty_mia1_connectivity
+       - binary_sensor.nofar_oneplus5t_connectivity
+       - sensor.nofar_current_status
+       - sensor.naty_current_status
+       - alarm_control_panel.home_alarm
+       - fan.bedroom_fan
+       - light.gateway_light_7811dcf781f1
+       - light.yeelight_white_f0b4290eb30b
+       - sensor.temperature_158d0002323847
+       - sensor.temperature_158d00023279f9
+       - sensor.temperature_158d000244da18
+       - sensor.temperature_158d00023a09d6
+       - sensor.humidity_158d0002323847
+       - sensor.humidity_158d00023279f9
+       - sensor.humidity_158d00023a09d6
+       - sensor.humidity_158d000244da18
+    domains:
+      - binary_sensor
+      - switch
+  exclude:
+    domains:
+      - switcher_aio
+      - calendar
+      - customizer
+      - zone
+      - input_select
+      - input_boolean
+      - input_text
+      - automation
+      - climate
+      - script
+      - time
+      - group
+    entities:
+       - sun.sun
+       
+####################################################
+#                Database Sensors                  #
+#################################################### 
+
+sensor:
+  
+  - platform: sql
+    db_url: !secret recorder_db_url
+    queries:
+      - name: states table size
+        query: 'SELECT  round(((data_length + index_length) / 1024 / 1024), 2) as size FROM information_schema.TABLES WHERE table_schema = "hass_db" and table_name="states"'
+        column: 'size'
+        unit_of_measurement: MB
+      - name: schema_changes table size
+        query: 'SELECT  round(((data_length + index_length) / 1024 / 1024), 2) as size FROM information_schema.TABLES WHERE table_schema = "hass_db" and table_name="schema_changes"'
+        column: 'size'
+        unit_of_measurement: MB
+      - name: recorder_runs table size
+        query: 'SELECT  round(((data_length + index_length) / 1024 / 1024), 2) as size FROM information_schema.TABLES WHERE table_schema = "hass_db" and table_name="recorder_runs"'
+        column: 'size'
+        unit_of_measurement: MB
+      - name: events table size
+        query: 'SELECT  round(((data_length + index_length) / 1024 / 1024), 2) as size FROM information_schema.TABLES WHERE table_schema = "hass_db" and table_name="events"'
+        column: 'size'
+        unit_of_measurement: MB
+      - name: full db size
+        query: 'SELECT table_schema "database", Round(Sum(data_length + index_length) / 1024 /1024, 2) "value" FROM information_schema.tables WHERE table_schema="hass_db" GROUP BY table_schema;'
+        column: 'value'
+        unit_of_measurement: MB
+
+####################################################
+#                        History                   #
+#################################################### 
+
+history:
+  include:
+    entities:
+       - device_tracker.naty
+       - device_tracker.nofar
+       - binary_sensor.naty_mia1_connectivity
+       - binary_sensor.nofar_oneplus5t_connectivity
+       - sensor.nofar_current_status
+       - sensor.naty_current_status
+       - alarm_control_panel.home_alarm
+       - fan.bedroom_fan
+       - light.gateway_light_7811dcf781f1
+       - light.yeelight_white_f0b4290eb30b
+       - sensor.temperature_158d0002323847
+       - sensor.temperature_158d00023279f9
+       - sensor.temperature_158d000244da18
+       - sensor.temperature_158d00023a09d6
+       - sensor.humidity_158d0002323847
+       - sensor.humidity_158d00023279f9
+       - sensor.humidity_158d00023a09d6
+       - sensor.humidity_158d000244da18
+    domains:
+      - binary_sensor
+      - switch
+  exclude:
+    domains:
+      - switcher_aio
+      - calendar
+      - customizer
+      - zone
+      - input_select
+      - input_boolean
+      - input_text
+      - automation
+      - climate
+      - script
+      - time
+      - group
+    entities:
+       - sun.sun
+####################################################
+#                       Logger                     #
+#################################################### 
+
+logger: 
+    default: warn
+    logs:
+      aiohttp.access: critical
+      aiohttp.server: critical
+      homeassistant.core: error
+      homeassistant.components.automation: warn
+      homeassistant.components.binary_sensor: error
+      homeassistant.components.climate.nest: warn
+      homeassistant.components.device_tracker: error
+      homeassistant.components.discovery: warn
+      homeassistant.components.http: warn
+      homeassistant.components.media_player: warn
+      homeassistant.components.sensor.pi_hole: critical
+      homeassistant.components.recorder: critical
+      homeassistant.components.sensor.darksky: warn
+      homeassistant.components.switch.deluge: warn
+      homeassistant.components.zwave: warn
+      homeassistant.helpers.script: warn
+      homeassistant.helpers.entity: critical
+      homeassistant.exceptions: info
+      py.warnings: error
+      root: warn
+
+####################################################
+#                       Logbook                    #
+#################################################### 
+
+logbook:
+  include:
+    entities:
+       - device_tracker.naty
+       - device_tracker.nofar
+       - binary_sensor.naty_mia1_connectivity
+       - binary_sensor.nofar_oneplus5t_connectivity
+       - sensor.nofar_current_status
+       - sensor.naty_current_status
+       - alarm_control_panel.home_alarm
+       - fan.bedroom_fan
+       - light.gateway_light_7811dcf781f1
+       - light.yeelight_white_f0b4290eb30b
+    domains:
+      - switch
+      - climate
+  exclude:
+    domains:
+      - sensor
+      - switcher_aio
+      - calendar
+      - customizer
+      - zone
+      - input_select
+      - input_boolean
+      - input_text
+      - automation
+      - script
+      - time
+      - group
+    entities:
+       - sun.sun
+################################################################

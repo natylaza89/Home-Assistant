@@ -1,0 +1,126 @@
+###############################################################################
+#   @author         :   Naty Laza
+#   @date           :   04/12/2019
+#   @package        :   Switcher
+#   @description    :   Configuration & Automation
+###############################################################################
+
+####################################################
+#                   Customize                      #
+####################################################
+
+homeassistant:
+  customize:
+
+      script.boiler_60_minutes:
+        friendly_name: "Boiler 60 Minutes"
+      script.boiler_45_minutes:
+        friendly_name: "Boiler 45 Minutes"
+        description: Boiler 45 Minutes
+      script.boiler_30_minutes:
+        friendly_name: "Boiler 30 Minutes"
+      script.boiler_15_minutes:
+        friendly_name: "Boiler 15 Minutes"
+      switcher_aio.control_device_switch:
+        icon: mdi:fire
+      switch.boiler_status:
+        icon: mdi:fire
+
+####################################################
+#            SwitcherV2 Configuration              #
+####################################################
+
+switcher_aio:
+  phone_id: !secret phone_id
+  device_id: !secret device_id
+  device_password: !secret device_password
+  create_view: true
+  create_groups: true
+  schedules_scan_interval:
+    minutes: 5
+
+####################################################
+#                     Switch                       #
+####################################################
+
+switch:
+  - platform: template
+    switches:
+      boiler_status:
+        value_template: "{{ is_state('switcher_aio.control_device_switch', 'on') }}"
+        turn_on:
+          service: switcher_aio.turn_on
+          data:
+            entity_id: switcher_aio.control_device_switch
+        turn_off:
+          service: switcher_aio.turn_off
+          data:
+            entity_id: switcher_aio.control_device_switch
+
+
+
+####################################################
+#                    Scripts                       #
+####################################################
+
+script:
+    boiler_15_minutes:
+      sequence:    
+        - service: switcher_aio.turn_on_15_minutes
+          data:
+            entity_id: switcher_aio.turn_on_timer_script
+    boiler_30_minutes:
+      sequence:    
+        - service: switcher_aio.turn_on_30_minutes
+          data:
+            entity_id: switcher_aio.turn_on_timer_script
+    boiler_45_minutes:
+      sequence:    
+        - service: switcher_aio.turn_on_45_minutes
+          data:
+            entity_id: switcher_aio.turn_on_timer_script
+    boiler_60_minutes:
+      sequence:    
+        - service: switcher_aio.turn_on_60_minutes
+          data:
+            entity_id: switcher_aio.turn_on_timer_script
+
+
+####################################################
+#                    Automation                    #
+####################################################
+
+automation:
+
+####################################################
+#               Switcher Turn On/Off               #
+####################################################
+
+- id: Notify When Switcher Is On
+  alias: Notify When Switcher Is On 
+  trigger:
+    - entity_id: switcher_aio.control_device_switch
+      platform: state
+      to: 'on'
+  action:
+  - delay:
+        seconds: 5
+  - data_template:
+      title: '*Boiler Is On*'
+      message: |
+          The Boiler has turned ON!
+          Time Left - {{ states.switcher_aio.time_left_sensor.state }}.
+    service: notify.all
+
+- id: Notify When Switcher Is Off
+  alias: Notify When Switcher Is Off 
+  trigger:
+    - entity_id: switcher_aio.control_device_switch
+      platform: state
+      to: 'off'
+  action:
+  - data_template:
+      title: '*Boiler Is Off*'
+      message: |
+          The Boiler has turned Off!
+    service: notify.all

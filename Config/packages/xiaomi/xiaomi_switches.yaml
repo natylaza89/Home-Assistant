@@ -1,0 +1,79 @@
+###############################################################################
+#   @author         :   Naty Laza
+#   @date           :   04/01/2019
+#   @package        :   Xiaomi Switches
+#   @description    :   Control Office Light & Bedroom Fan\Light
+###############################################################################
+
+####################################################
+#                    Automation                    #
+####################################################
+
+automation:
+
+####################################################
+#              Xiaomi Switch for Br Fan            #
+####################################################
+
+- alias: toggle br fan light
+  trigger:
+    platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.switch_158d00023f4225
+      click_type: single
+  action:
+    service: switch.toggle
+    entity_id: switch.brfan_light
+
+- alias: toggle br fan power
+  trigger:
+    platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.switch_158d00023f4225
+      click_type: double
+  action:
+    service: fan.toggle
+    entity_id: fan.bedroom_fan
+
+####################################################
+#         Xiaomi Switch for Office Light           #
+####################################################
+
+- alias: toggle office light
+  trigger:
+    platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.switch_158d00023d1c41
+      click_type: single
+  action:
+    service: light.toggle
+    entity_id: light.yeelight_mono1_f0b4290eb30b
+
+- alias: office light brightness up
+  trigger:
+    platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.switch_158d00023d1c41
+      click_type: double
+  action:
+     service: light.turn_on
+     entity_id: light.yeelight_mono1_f0b4290eb30b
+     data_template:
+        brightness: '{{ states.light.yeelight_mono1_f0b4290eb30b.attributes.brightness + 20 }}'
+
+- alias: office light brightness down
+  trigger:
+    platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.switch_158d00023d1c41
+      click_type: long_click_press
+  action:
+     service: light.turn_on
+     entity_id: light.yeelight_mono1_f0b4290eb30b
+     data_template:
+        brightness: '{{ states.light.yeelight_mono1_f0b4290eb30b.attributes.brightness - 20 }}'

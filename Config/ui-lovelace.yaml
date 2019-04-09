@@ -1,0 +1,2405 @@
+###############################################################################
+#   @author         :   Naty Laza
+#   @date           :   22/11/2018
+#   @description    :   UI Lovelace
+###############################################################################
+
+title: Naty Home-Assistant
+
+####################################################
+#           Include external resources             #
+####################################################
+
+resources:
+  - url: /local/custom_ui/card-modder/card-modder.js?v=1
+    type: js
+  - url: /local/custom_ui/card-tools.js
+    type: js
+  - url: /local/custom_ui/vertical-stack-card/vertical-stack-in-card.js?v=0.0.2
+    type: js
+  - url: /local/custom_ui/hebrew-greeting-card/hebrew-greeting-card.js?v=0.0.1
+    type: js  
+  - url: /local/custom_ui/hebrew-calendar-card/hebrew-calendar-card.js?v=1.0.0
+    type: module
+  - url: https://unpkg.com/moment@2.22.2/moment.js
+    type: js
+  - url: /local/custom_ui/folding-group-entity-row/toggle-lock-entity-row.js
+    type: js
+  - url: /local/custom_ui/column-card/column-card.js
+    type: js
+  - url: /local/custom_ui/slider-entity-row/slider-entity-row.js
+    type: js
+  - url: /local/custom_ui/state-attribute-element/state-attribute-element.js?v=0
+    type: js
+  - url: /local/custom_ui/tracker-card.js?#v=0.05
+    type: js
+  - url: /local/custom_ui/entity-attributes-card/entity-attributes-card.js?v=0.1.1
+    type: js   
+
+####################################################
+#                     Views                        #
+####################################################
+views:
+
+####################################################
+#                       Welcome                    #
+####################################################
+
+  - icon: mdi:home-assistant
+    title: Main
+    background: center / cover no-repeat url("/local/pictures/background.gif") fixed
+    cards:
+        
+        - type: vertical-stack
+          cards:
+        
+            #Greeting Card 
+            - type: custom:card-modder
+              card:
+                  type: custom:hebrew-greeting-card
+                  background: /local/pictures/main/welcome.jpg
+                  height: 140
+                  ecfc17e1a271443fbfc1c447caf084de: נתי
+                  3e11431080af4cc09b736103fcd1af15: נופר
+              style:                 
+                border-radius: 20px
+                border: solid 1px rgba(100,100,100,0.3)
+                box-shadow: 3px 3px rgba(0,0,0,0.4)    
+            #Home Status     
+            - type: custom:card-modder
+              card:                   
+                  type: picture-elements
+                  image: /local/pictures/main/house.png
+                  elements:
+                      - type: state-icon
+                        entity: alarm_control_panel.home_alarm
+                        style: {color: white, left: 10%, top: 86%, pointer-events: none}    
+                      - type: state-icon
+                        entity: switch.boiler_status
+                        style: {left: 20%, top: 86%, pointer-events: none}     
+                      - type: state-icon
+                        entity: binary_sensor.laundry_power
+                        style: {color: white, left: 30%, top: 86%, pointer-events: none}              
+                      - type: state-icon
+                        entity: switch.lrac_power
+                        style: {color: white, left: 40%, top: 86%, pointer-events: none}
+                      - type: state-icon
+                        entity: fan.bedroom_fan
+                        style: {color: white, left: 50%, top: 86%, pointer-events: none}
+                      - type: state-icon
+                        entity: light.gateway_light_7811dcf781f1
+                        style: {color: white, left: 65%, top: 86%, pointer-events: none}
+                      - type: state-icon
+                        entity: light.yeelight_mono1_f0b4290eb30b
+                        style: {color: white, left: 75%, top: 86%, pointer-events: none}
+                      - type: state-icon
+                        entity: switch.brfan_light
+                        style: {color: white, left: 85%, top: 86%, pointer-events: none}
+                      - type: state-icon
+                        entity: binary_sensor.vacuum_status
+                        style: {left: 95%, top: 86%, pointer-events: none}
+              style:                 
+                border-radius: 20px
+                border: solid 1px rgba(100,100,100,0.3)
+                box-shadow: 3px 3px rgba(0,0,0,0.4)    
+                overflow: hidden  
+
+        
+        - type: vertical-stack
+          cards:
+            #Presence Detect
+            - type: horizontal-stack
+              cards:
+                  - type: custom:card-modder
+                    card:          
+                      type: picture-elements
+                      image: /local/pictures/main/naty.jpg
+                      elements:
+                        - type: state-icon
+                          entity: sensor.battery_natylaza
+                          style: {color: white, left: 15%, top: 93%}
+                        - type: state-label
+                          entity: sensor.battery_natylaza
+                          style: {color: white, left: 32%, top: 93%}
+                        - type: state-label
+                          entity: sensor.naty_current_status
+                          #prefix: 'Naty - '
+                          style: {color: white, left: 65%, top: 93%}
+                    style:                 
+                      border-radius: 20px
+                      border: solid 1px rgba(100,100,100,0.3)
+                      box-shadow: 3px 3px rgba(0,0,0,0.4)
+                      overflow: hidden
+                      
+                  - type: custom:card-modder
+                    card:          
+                      type: picture-elements
+                      image: /local/pictures/main/nofar.jpg
+                      elements:
+                        - type: state-icon
+                          entity: sensor.battery_nofar
+                          style: {color: white, left: 15%, top: 93%}
+                        - type: state-label
+                          entity: sensor.battery_nofar
+                          style: {color: white, left: 32%, top: 93%}
+                        - type: state-label
+                          entity: sensor.nofar_current_status
+                          #prefix: 'Naty - '
+                          style: {color: white, left: 65%, top: 93%}
+                    style:                 
+                      border-radius: 20px
+                      border: solid 1px rgba(100,100,100,0.3)
+                      box-shadow: 3px 3px rgba(0,0,0,0.4)
+                      overflow: hidden
+
+            #Time & Date
+            - type: horizontal-stack
+              cards:
+                  - type: custom:card-modder
+                    card:          
+                      type: picture-entity
+                      image: /local/pictures/main/time.jpg
+                      entity: sensor.time
+                    style:                 
+                      border-radius: 20px
+                      border: solid 1px rgba(100,100,100,0.3)
+                      box-shadow: 3px 3px rgba(0,0,0,0.4)        
+                  - type: custom:card-modder
+                    card:          
+                      type: picture-entity
+                      image: /local/pictures/main/date.jpeg
+                      entity: sensor.date
+                    style:                 
+                      border-radius: 20px
+                      border: solid 1px rgba(100,100,100,0.3)
+                      box-shadow: 3px 3px rgba(0,0,0,0.4)
+
+        #Holiday
+        - type: custom:card-modder
+          card: 
+            type: picture-elements
+            image: /local/pictures/main/Holiday.jpg
+            elements:
+                - type: state-label
+                  entity: sensor.holiday_status
+                  style: {color: white, left: 50%, top: 22%}               
+          style:                 
+            height: 80px
+            background-image: url("/local/pictures/cardback.png")
+            background-repeat: no-repeat
+            background-color: rgba(50,50,50,0.3)
+            background-size: 100% 68px
+            border-radius: 20px
+            border: solid 1px rgba(100,100,100,0.3)
+            box-shadow: 3px 3px rgba(0,0,0,0.4)  
+            overflow: hidden
+
+        #Birthday
+        - type: custom:card-modder
+          card: 
+            type: picture-elements
+            image: /local/pictures/main/birthday.jpg
+            elements:
+                #Naty
+                - type: state-label
+                  entity: sensor.naty_lazarovich_birthday
+                  prefix: 'Naty - '
+                  style: {color: white, left: 30%, top: 9%, pointer-events: none}
+                - type: state-icon
+                  entity: sensor.naty_lazarovich_birthday
+                  style: {color: white, left: 10%, top: 8%, pointer-events: none}
+                #Nofar
+                - type: state-label
+                  entity: sensor.nofar_chen_birthday
+                  prefix: 'Nofar - '
+                  style: {color: white, left: 32%, top: 19%, pointer-events: none}
+                - type: state-icon
+                  entity: sensor.nofar_chen_birthday
+                  style: {color: white, left: 10%, top: 18%, pointer-events: none}
+                #Moshe
+                - type: state-label
+                  entity: sensor.moshe_lazarovich_birthday
+                  prefix: 'Moshe - '
+                  style: {color: white, left: 31%, top: 28%, pointer-events: none}
+                - type: state-icon
+                  entity: sensor.moshe_lazarovich_birthday
+                  style: {color: white, left: 10%, top: 28%, pointer-events: none}
+                #Sarah
+                - type: state-label
+                  entity: sensor.sarah_lazarovich_birthday
+                  prefix: 'Sarah - '
+                  style: {color: white, left: 32%, top: 38%, pointer-events: none}
+                - type: state-icon
+                  entity: sensor.sarah_lazarovich_birthday
+                  style: {color: white, left: 10%, top: 38%, pointer-events: none}
+                #Matan
+                - type: state-label
+                  entity: sensor.matan_lazarovich_birthday
+                  prefix: 'Matan - '
+                  style: {color: white, left: 32%, top: 48%, pointer-events: none}
+                - type: state-icon
+                  entity: sensor.matan_lazarovich_birthday
+                  style: {color: white, left: 10%, top: 48%, pointer-events: none}
+
+          style:                 
+            border-radius: 20px
+            border: solid 1px rgba(100,100,100,0.3)
+            box-shadow: 3px 3px rgba(0,0,0,0.4)
+            overflow: hidden
+            
+        
+        #Google Calendar
+        - type: custom:card-modder
+          card: 
+              type: custom:vertical-stack-in-card
+              cards:   
+                - type: "custom:hebrew-calendar-card"
+                  name: "Nofar's Calendar"
+                  entities:
+                    - calendar.nofarchen20gmailcom
+          style:                 
+            border-radius: 20px
+            border: solid 1px rgba(100,100,100,0.3)
+            box-shadow: 3px 3px rgba(0,0,0,0.4)
+            overflow: hidden
+
+
+
+####################################################
+#                    Lights                        #
+####################################################   
+
+  - icon: mdi:lightbulb-on
+    title: Lights
+    background: center / cover no-repeat url("/local/pictures/background.gif") fixed
+    cards:
+        - type: vertical-stack
+          cards:
+              #Gateway Light Power
+              - type: custom:card-modder
+                card:          
+                  type: picture-entity
+                  image: /local/pictures/light/gateway_light.jpg
+                  entity: light.gateway_light_7811dcf781f1
+                  name: Gateway Light
+                  tap_action: 
+                    action: toggle
+                style:                 
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+              #Gateway Light Brightness
+              - type: custom:card-modder
+                card: 
+                    type: entities
+                    entities:
+                    - entity: light.gateway_light_7811dcf781f1
+                      name: Gateway Light
+                      type: custom:slider-entity-row
+                    - type: sensor
+                      entity: sensor.illumination_7811dcf781f1
+                      name: Gateway Light Illumination
+                      graph: line
+                      height: 75
+                      line_color: "#ffffff"
+                style:                 
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+                  height: 120px
+
+        - type: vertical-stack
+          cards:            
+              #Bedroom Light Power
+              - type: custom:card-modder
+                card:          
+                  type: picture-entity
+                  image: /local/pictures/light/bedroom_light.jpg
+                  entity: switch.brfan_light
+                  tap_action: 
+                    action: toggle
+                style:                 
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+              #Office Light Power
+              - type: custom:card-modder
+                card:          
+                  type: picture-entity
+                  image: /local/pictures/light/office_light.jpg
+                  entity: light.yeelight_mono1_f0b4290eb30b
+                  name: Office Light
+                  tap_action: 
+                    action: toggle
+                style:                 
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+              #Office Light Brightness
+              - type: custom:card-modder
+                card: 
+                    type: entities
+                    entities:
+                    - entity: light.yeelight_mono1_f0b4290eb30b
+                      name: Office Light
+                      type: custom:slider-entity-row
+                style:                 
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+
+####################################################
+#                   AC & Fan                       #
+####################################################  
+
+  - icon: mdi:air-conditioner
+    title: AC FAN
+    background: center / cover no-repeat url("/local/pictures/background.gif") fixed
+    cards:
+        - type: vertical-stack
+          cards:
+              
+           #Living Room AC
+            - type: custom:card-modder
+              card:       
+                type: thermostat
+                entity: climate.living_room             
+                  # type: picture-elements
+                  # title: Living Room Air Conditioner
+                  # image: /local/pictures/ac_fan/ac.jpg
+                  # elements:
+                  #       #AC Power        
+                  #       - type: state-icon
+                  #         tap_action: 
+                  #           action: toggle
+                  #         service: switch.toggle
+                  #         entity: switch.lrac_power
+                  #         style: {color: white, left: 15%, top: 88%}
+                  #       #Current Temp      
+                  #       - type: state-icon
+                  #         entity: sensor.lr_ac_temp_sensor
+                  #         style: {color: white, left: 30%, top: 84%}
+                  #       - type: state-label
+                  #         entity: sensor.lr_ac_temp_sensor
+                  #         suffix: ' °C'
+                  #         style: {color: white, left: 30%, top: 94%, pointer-events: none}
+                  #       #AC Mode        
+                  #       - type: state-icon
+                  #         entity: input_select.lr_ac_mode
+                  #         tap_action: 
+                  #           action: call-service
+                  #           service: input_select.select_next
+                  #           service_data:
+                  #             entity_id: input_select.lr_ac_mode                        
+                  #         style: {color: white, left: 45%, top: 84%}
+                  #       - type: state-label
+                  #         entity: input_select.lr_ac_mode
+                  #         style: {color: white, left: 45%, top: 94%, pointer-events: none}
+                  #       #Fan mode       
+                  #       - type: state-icon
+                  #         entity: input_select.lr_ac_fan
+                  #         tap_action: 
+                  #           action: call-service
+                  #           service: input_select.select_next
+                  #           service_data:
+                  #             entity_id: input_select.lr_ac_fan                          
+                  #         style: {color: white, left: 60%, top: 84%}
+                  #       - type: state-label
+                  #         entity: input_select.lr_ac_fan
+                  #         style: {color: white, left: 60%, top: 94%, pointer-events: none}
+                  #       #Temp Down  
+                  #       - type: state-icon
+                  #         entity: script.temp_down
+                  #         tap_action: 
+                  #           action: call-service
+                  #           service: script.turn_on
+                  #           service_data:
+                  #             entity_id: script.temp_down   
+                  #         style: {color: white, left: 75%, top: 88%}
+                  #       #Temp Up  
+                  #       - type: state-icon
+                  #         entity: script.temp_up
+                  #         tap_action: 
+                  #           action: call-service
+                  #           service: script.turn_on
+                  #           service_data:
+                  #             entity_id: script.temp_up
+                  #         style: {color: white, left: 85%, top: 88%}             
+              style:                 
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+                  overflow: hidden
+
+        - type: vertical-stack
+          cards:              
+              #Fan Office Room    
+              - type: custom:card-modder
+                card:           
+                    type: picture-entity
+                    image: /local/pictures/ac_fan/office_fan.png
+                    entity: switch.plug_158d0001bc0fe3
+                    tap_action: 
+                     action: toggle
+                    name: Office Fan
+                style:                 
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+                  overflow: hidden
+
+        #Bed Room Ceiling Fan   
+        - type: custom:card-modder
+          card:           
+            type: picture-elements
+            title: Bed Room Fan
+            image: /local/pictures/ac_fan/fan.jpg
+            elements:
+                  #Fan Power        
+                  - type: state-icon
+                    tap_action: 
+                     action: toggle
+                    service: fan.toggle
+                    entity: fan.bedroom_fan
+                    style: {color: white, left: 40%, top: 83%}
+                  #Fan Light Power
+                  - type: state-icon
+                    tap_action: 
+                     action: toggle
+                    service: switch.toggle
+                    entity: switch.brfan_light
+                    style: {color: white, left: 50%, top: 83%}
+                  #Fan Mode
+                  - type: state-label
+                    entity: input_select.br_fan
+                    style: {color: white, left: 68%, top: 83%, pointer-events: none}
+                  - type: state-icon
+                    entity: input_select.br_fan
+                    tap_action: 
+                      action: call-service
+                      service: input_select.select_next
+                      service_data:
+                        entity_id: input_select.br_fan
+                    style: {color: white, left: 60%, top: 83%}
+          style:                 
+            height: 360px
+            background-image: url("/local/pictures/cardback.png")
+            background-repeat: no-repeat
+            background-color: rgba(50,50,50,0.3)
+            background-size: 100% 68px
+            border-radius: 20px
+            border: solid 1px rgba(100,100,100,0.3)
+            box-shadow: 3px 3px rgba(0,0,0,0.4)  
+            overflow: hidden
+
+####################################################
+#                   Media Player                   #
+####################################################  
+
+  - icon: mdi:television-box
+    title: Media Player
+    background: center / cover no-repeat url("/local/pictures/background.gif") fixed
+    cards:
+        - type: vertical-stack
+          cards:
+              #Living Room AC
+              - type: custom:card-modder
+                card:
+                  #Samsung TV Living Room
+                  title: Bedroom TV
+                  type: picture-elements
+                  image: /local/pictures/media_player/tv.jpg
+                  elements:
+                        #TV Power        
+                        - type: state-icon
+                          entity: switch.lrtv_power
+                          tap_action: 
+                            action: call-service
+                            service: switch.toggle
+                            service_data:
+                              entity_id: switch.lrtv_power
+                          style: {color: white, left: 72%, top: 10%}
+                        #Soucre        
+                        - type: state-icon
+                          entity: script.lrtv_select_source
+                          tap_action: 
+                            action: call-service
+                            service: script.turn_on
+                            service_data:
+                              entity_id: script.lrtv_select_source
+                          style: {color: white, left: 95%, top: 10%}
+                        #Volume Up    
+                        - type: state-icon
+                          entity: script.lrtv_volume_up
+                          tap_action: 
+                            action: call-service
+                            service: script.turn_on
+                            service_data:
+                              entity_id: script.lrtv_volume_up
+                          style: {color: white, left: 72%, top: 30%}
+                        #Volume Down     
+                        - type: state-icon
+                          entity: script.lrtv_volume_down
+                          tap_action: 
+                            action: call-service
+                            service: script.turn_on
+                            service_data:
+                              entity_id: script.lrtv_volume_down
+                          style: {color: white, left: 72%, top: 45%}
+                        #Mute     
+                        - type: state-icon
+                          entity: switch.lrtv_mute
+                          tap_action: 
+                            action: call-service
+                            service: switch.toggle
+                            service_data:
+                              entity_id: switch.lrtv_mute
+                          style: {color: white, left: 95%, top: 30%}
+                        #Menu Button
+                        - type: state-icon
+                          entity: script.lrtv_menu_button
+                          tap_action: 
+                            action: call-service
+                            service: script.turn_on
+                            service_data:
+                              entity_id: script.lrtv_menu_button
+                          style: {color: white, left: 95%, top: 45%}
+                        #Up Arrow  
+                        - type: state-icon
+                          entity: script.lrtv_up_arrow
+                          tap_action: 
+                            action: call-service
+                            service: script.turn_on
+                            service_data:
+                              entity_id: script.lrtv_up_arrow
+                          style: {color: white, left: 83.5%, top: 60%}
+                        #Left Arrow       
+                        - type: state-icon
+                          entity: script.lrtv_left_arrow
+                          tap_action: 
+                            action: call-service
+                            service: script.turn_on
+                            service_data:
+                              entity_id: script.lrtv_left_arrow
+                          style: {color: white, left: 72%, top: 75%}
+                        #OK Button 
+                        - type: state-icon
+                          entity: script.lrtv_ok_button
+                          tap_action: 
+                            action: call-service
+                            service: script.turn_on
+                            service_data:
+                              entity_id: script.lrtv_ok_button
+                          style: {color: white, left: 83.5%, top: 75%}
+                        #Right Arrow  
+                        - type: state-icon
+                          entity: script.lrtv_right_arrow
+                          tap_action: 
+                            action: call-service
+                            service: script.turn_on
+                            service_data:
+                              entity_id: script.lrtv_right_arrow
+                          style: {color: white, left: 95%, top: 75%}
+                        #Return Button
+                        - type: state-icon
+                          entity: script.lrtv_return_button
+                          tap_action: 
+                            action: call-service
+                            service: script.turn_on
+                            service_data:
+                              entity_id: script.lrtv_return_button
+                          style: {color: white, left: 72%, top: 90%}
+                        #Down Arrow 
+                        - type: state-icon
+                          entity: script.lrtv_down_arrow
+                          tap_action: 
+                            action: call-service
+                            service: script.turn_on
+                            service_data:
+                              entity_id: script.lrtv_down_arrow                        
+                          style: {color: white, left: 83.5%, top: 90%}
+                        #Exit Button
+                        - type: state-icon
+                          entity: script.lrtv_exit_button
+                          tap_action: 
+                            action: call-service
+                            service: script.turn_on
+                            service_data:
+                              entity_id: script.lrtv_exit_button
+                          style: {color: white, left: 95%, top: 90%}
+                style:                 
+                  background-image: url("/local/pictures/cardback.png")
+                  background-repeat: no-repeat
+                  background-color: rgba(50,50,50,0.3)
+                  background-size: 100% 68px
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+                  overflow: hidden
+
+              #Living Room TV Led Strip
+              - type: custom:card-modder
+                card:
+                  type: picture-elements
+                  image: /local/pictures/media_player/stripledtv.jpg
+                  title: TV Led Strip
+                  elements:
+                        #Led Strip Color   
+                        - type: state-icon
+                          entity: input_select.lrtv_stripled_color
+                          tap_action: 
+                            action: call-service
+                            service: input_select.select_next
+                            service_data:
+                              entity_id: input_select.lrtv_stripled_color                          
+                          style: {color: white, left: 8%, top: 87%}
+                        - type: state-label
+                          entity: input_select.lrtv_stripled_color
+                          style: {color: white, left: 20%, top: 88%, pointer-events: none}                           
+                        #Led Strip Mode        
+                        - type: state-icon
+                          entity: input_select.lrtv_stripled_mode
+                          tap_action: 
+                            action: call-service
+                            service: input_select.select_next
+                            service_data:
+                              entity_id: input_select.lrtv_stripled_mode 
+                          style: {color: white, left: 40%, top: 88%}
+                        - type: state-label
+                          entity: input_select.lrtv_stripled_mode
+                          style: {color: white, left: 55%, top: 88%, pointer-events: none}  
+                        #Led Strip Power    
+                        - type: state-icon
+                          entity: switch.lrtv_stripled_power
+                          tap_action: 
+                            action: call-service
+                            service: switch.toggle
+                            service_data:
+                              entity_id: switch.lrtv_stripled_power
+                          style: {color: white, left: 79%, top: 88%}
+                        - type: state-label
+                          entity: switch.lrtv_stripled_power
+                          style: {color: white, left: 85%, top: 88%, pointer-events: none}  
+                style:                 
+                  background-image: url("/local/pictures/cardback.png")
+                  background-repeat: no-repeat
+                  background-color: rgba(50,50,50,0.3)
+                  background-size: 100% 68px
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+                  overflow: hidden
+                   
+        - type: vertical-stack
+          cards:
+              - type: custom:card-modder
+                card:
+                    #Mi Box 3 Living Room
+                    type: picture-elements
+                    image: /local/pictures/media_player/mibox3.jpg
+                    title: Living Room Mi Box 3
+                    elements:
+                          #TV Power        
+                          - type: state-icon
+                            entity: switch.lrmibox_power
+                            tap_action: 
+                             action: call-service
+                             service: switch.toggle
+                             service_data:
+                              entity_id: switch.lrmibox_power
+                            style: {color: white, left: 72%, top: 10%}
+                          #Volume Up    
+                          - type: state-icon
+                            entity: script.lrmibox3_volume_up
+                            tap_action: 
+                              action: call-service
+                              service: script.turn_on
+                              service_data:
+                                entity_id: script.lrmibox3_volume_up                          
+                            style: {color: white, left: 83.5%, top: 10%}
+                          #Volume Down     
+                          - type: state-icon
+                            entity: script.lrmibox3_volume_down
+                            tap_action: 
+                              action: call-service
+                              service: script.turn_on
+                              service_data:
+                                entity_id: script.lrmibox3_volume_down 
+                            style: {color: white, left: 95%, top: 10%}
+                          #Up Arrow  
+                          - type: state-icon
+                            entity: script.lrmibox3_up_arrow
+                            tap_action: 
+                              action: call-service
+                              service: script.turn_on
+                              service_data:
+                                entity_id: script.lrmibox3_up_arrow 
+                            style: {color: white, left: 83.5%, top: 25%}
+                          #Left Arrow       
+                          - type: state-icon
+                            entity: script.lrmibox3x_left_arrow
+                            tap_action: 
+                              action: call-service
+                              service: script.turn_on
+                              service_data:
+                                entity_id: script.lrmibox3x_left_arrow
+                            style: {color: white, left: 72%, top: 40%}
+                          #OK Button 
+                          - type: state-icon
+                            entity: script.lrmibox3_ok_button
+                            tap_action: 
+                              action: call-service
+                              service: script.turn_on
+                              service_data:
+                                entity_id: script.lrmibox3_ok_button
+                            style: {color: white, left: 83.5%, top: 40%}
+                          #Right Arrow  
+                          - type: state-icon
+                            entity: script.lrmibox3_right_arrow
+                            tap_action: 
+                              action: call-service
+                              service: script.turn_on
+                              service_data:
+                                entity_id: script.lrmibox3_right_arrow
+                            style: {color: white, left: 95%, top: 40%}
+                          #Down Arrow 
+                          - type: state-icon
+                            entity: script.lrmibox3_down_arrow
+                            tap_action: 
+                              action: call-service
+                              service: script.turn_on
+                              service_data:
+                                entity_id: script.lrmibox3_down_arrow
+                            style: {color: white, left: 83.5%, top: 55%}
+                          #Return Button    
+                          - type: state-icon
+                            entity: script.lrmibox3_back_button
+                            tap_action: 
+                              action: call-service
+                              service: script.turn_on
+                              service_data:
+                                entity_id: script.lrmibox3_back_button
+                            style: {color: white, left: 72%, top: 70%}
+                          #Info Button     
+                          - type: state-icon
+                            entity: script.lrmibox3_info_button
+                            tap_action: 
+                              action: call-service
+                              service: script.turn_on
+                              service_data:
+                                entity_id: script.lrmibox3_info_button
+                            style: {color: white, left: 83.5%, top: 70%}
+                          #Exit Main Button
+                          - type: state-icon
+                            entity: script.lrmibox3_exit_main_button
+                            tap_action: 
+                              action: call-service
+                              service: script.turn_on
+                              service_data:
+                                entity_id: script.lrmibox3_exit_main_button
+                            style: {left: 95%, top: 70%}
+                style:                 
+                  background-image: url("/local/pictures/cardback.png")
+                  background-repeat: no-repeat
+                  background-color: rgba(50,50,50,0.3)
+                  background-size: 100% 68px
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+                  overflow: hidden
+
+
+
+
+####################################################
+#                 Xiaomi Vacuum                    #
+####################################################  
+
+  - icon: mdi:robot-vacuum-variant
+    title: Vacum
+    background: center / cover no-repeat url("/local/pictures/background.gif") fixed
+    name: Xiaomi Vacuum
+    type: horizontal
+    cards:   
+      - type: custom:card-modder
+        card:
+          type: picture-elements
+          image: /local/pictures/vacuum/xiaomi_vacuum_04.jpg
+          elements:
+          - type: image
+            entity: input_boolean.vacuum_zone_settings
+            tap_action: 
+              action: toggle
+            hold_action: 
+              action: toggle
+            image: /local/pictures/vacuum/map.png
+            state_image:
+              'on': /local/pictures/vacuum/map.png
+            state_filter:
+              'on': brightness(200%) saturate(1.8)
+              'off': brightness(80%) saturate(0.8)
+            style:
+              top: 90%
+              left: 65%
+              width: 4.5%
+          - type: icon
+            icon: mdi:information
+            tap_action: 
+              action: more-info
+            entity: vacuum.xiaomi_vacuum_cleaner
+            style:
+              top: 90%
+              left: 75%
+          - type: icon
+            icon: mdi:bell-ring
+            tap_action: 
+              action: call-service
+              service: vacuum.locate
+            entity: vacuum.xiaomi_vacuum_cleaner
+            style:
+              top: 90%
+              left: 55%
+              "--paper-item-icon-color": rgb(115, 122, 130)
+          - type: icon
+            tap_action: 
+              action: call-service
+              service: vacuum.return_to_base
+            icon: mdi:home
+            entity: vacuum.xiaomi_vacuum_cleaner
+            style:
+              top: 90%
+              left: 45%
+              "--paper-item-icon-color": rgb(115, 122, 130)
+          - type: icon
+            icon: mdi:play
+            tap_action: 
+              action: call-service
+              service: vacuum.start
+            entity: vacuum.xiaomi_vacuum_cleaner
+            style:
+              top: 90%
+              left: 35%
+              "--paper-item-icon-color": rgb(115, 122, 130)
+          - type: icon
+            icon: mdi:stop
+            tap_action: 
+              action: call-service
+              service: vacuum.stop
+            entity: vacuum.xiaomi_vacuum_cleaner
+            style:
+              top: 90%
+              left: 25%
+              "--paper-item-icon-color": rgb(115, 122, 130)
+          ## Main Brush ##
+          - type: state-label
+            entity: sensor.vacuum_main_brush
+            style:
+              top: 30%
+              right: 1%
+              color: rgb(255, 255, 255)
+              transform: translate(0%,-50%)
+              pointer-events: none
+              text-shadow: 1px 1px black
+              font-size: 90%
+              font-weight: bold
+              opacity: 0.8
+          - type: state-label
+            entity: sensor.vacuum_side_brush
+            style:
+              top: 78%
+              right: 1%
+              color: rgb(255, 255, 255)
+              transform: translate(0%,-50%)
+              pointer-events: none
+              font-size: 90%
+              font-weight: bold
+              opacity: 0.8
+          - type: state-label
+            entity: sensor.vacuum_filter
+            style:
+              top: 38%
+              right: 1%
+              color: rgb(255, 255, 255)
+              transform: translate(0%,-50%)
+              pointer-events: none
+              font-size: 90%
+              font-weight: bold
+              opacity: 0.8
+          - type: state-label
+            entity: sensor.vacuum_sensor
+            style:
+              top: 60%
+              right: 1%
+              color: rgb(255, 255, 255)
+              transform: translate(0%,-50%)
+              pointer-events: none
+              font-size: 90%
+              font-weight: bold
+              opacity: 0.8
+          ## Status ##
+          - type: state-label
+            entity: sensor.vacuum_status
+            style:
+              top: 53%
+              right: 79%
+              color: rgb(255, 255, 255)
+              transform: translate(0%,-50%)
+              pointer-events: none
+              text-shadow: 1px 1px black
+              font-size: 90%
+              font-weight: bold
+              opacity: 0.8
+
+          - type: state-label
+            entity: vacuum.xiaomi_vacuum_cleaner
+            style:
+              top: 10%
+              right: 41%
+              color: rgb(255, 255, 255)
+              transform: translate(0%,-50%)
+              pointer-events: none
+              text-shadow: 1px 1px black
+              font-size: 148%
+              font-weight: bold
+              opacity: 0.8              
+              
+          - type: state-label
+            entity: sensor.vacuum_battery
+            style:
+              top: 34%
+              left: 1%
+              color: rgb(255, 255, 255)
+              transform: translate(0%,-50%)
+              pointer-events: none
+              font-size: 90%
+              font-weight: bold
+              opacity: 0.8
+          - type: state-label
+            entity: sensor.vacuum_cleaning_time
+            style:
+              top: 87%
+              left: 0%
+              color: '#ffffff'
+              transform: translate(0%,-50%)
+              pointer-events: none
+              font-size: 80%
+              font-weight: bold
+          - type: state-label
+            entity: sensor.vacuum_cleaned_area
+            style:
+              top: 81%
+              left: 0%
+              color: '#ffffff'
+              transform: translate(0%,-50%)
+              pointer-events: none
+              font-size: 80%
+              font-weight: bold              
+          - type: state-label
+            entity: sensor.vacuum_weekdays
+            style:
+              top: 75%
+              left: 1%
+              color: rgb(255, 255, 255)
+              transform: translate(0%,-50%)
+              pointer-events: none
+              font-size: 90%
+              font-weight: bold
+              opacity: 0.8
+          - type: state-label
+            entity: sensor.vacuum_weekend
+            style:
+              top: 60%
+              left: 1%
+              color: rgb(255, 255, 255)
+              transform: translate(0%,-50%)
+              pointer-events: none
+              font-size: 90%
+              font-weight: bold
+              opacity: 0.8
+          - type: image
+            entity: automation.vacuum_schedule_cleaning_on_weekdays
+            tap_action: 
+              action: toggle
+            image: /local/pictures/vacuum/timer-off.png
+            state_image:
+              'on': /local/pictures/vacuum/timer.png
+            state_filter:
+              'on': brightness(200%) saturate(1.8)
+              'off': brightness(80%) saturate(0.8)
+            style:
+              top: 90%
+              left: 84%
+              width: 4.5%
+          - type: image
+            entity: automation.vacuum_schedule_cleaning_on_weekends
+            tap_action: 
+              action: toggle
+            image: /local/pictures/vacuum/timer-off.png
+            state_image:
+              'on': /local/pictures/vacuum/timer.png
+            state_filter:
+              'on': brightness(200%) saturate(1.8)
+              'off': brightness(80%) saturate(0.8)
+            style:
+              top: 90%
+              left: 92%
+              width: 4.5%
+        style:
+            background-image: url("/local/pictures/cardback.png")
+            background-repeat: no-repeat
+            background-color: rgba(50,50,50,0.3)
+            background-size: 100% 68px                    
+            border-radius: 20px
+            border: solid 1px rgba(100,100,100,0.3)
+            box-shadow: 3px 3px rgba(0,0,0,0.4)
+            overflow: hidden
+          
+#################################################################
+#                Vacuum - Start Time Hour Minutes Card          #
+#################################################################
+      - type: vertical-stack
+        cards:        
+          - type: custom:card-modder
+            card:
+              type: conditional
+              conditions:
+                - entity: automation.vacuum_schedule_cleaning_on_weekdays
+                  state: "on"
+              card:
+                type: entities
+                entities:
+                  - sensor.vacuum_start_time_weekdays
+                  - input_number.vacuum_start_hour_weekdays
+                  - input_number.vacuum_start_minutes_weekdays
+            style:
+              background-image: url("/local/pictures/cardback.png")
+              background-repeat: no-repeat
+              background-color: rgba(50,50,50,0.3)
+              background-size: 100% 68px                    
+              border-radius: 20px
+              border: solid 1px rgba(100,100,100,0.3)
+              box-shadow: 3px 3px rgba(0,0,0,0.4)
+              overflow: hidden
+
+#################################################################
+#           Vacuum - Turens on Zone Settings Value Card         #
+#################################################################
+          - type: custom:card-modder
+            card:
+              type: conditional
+              conditions:
+                - entity: input_boolean.vacuum_zone_settings
+                  state: "on"
+              card:
+                type: vertical-stack
+                cards:
+                  - type: entities
+                    entities:
+                      - input_select.vacuum_fan_speed_list
+                      - input_select.vacuum_room
+            style:
+              background-image: url("/local/pictures/cardback.png")
+              background-repeat: no-repeat
+              background-color: rgba(50,50,50,0.3)
+              background-size: 100% 68px                    
+              border-radius: 20px
+              border: solid 1px rgba(100,100,100,0.3)
+              box-shadow: 3px 3px rgba(0,0,0,0.4)
+              overflow: hidden
+
+#################################################################
+#                   Vacuum - Zone Fan Card                      #
+#################################################################
+      - type: vertical-stack
+        cards:             
+          - type: custom:card-modder
+            card:
+              type: glance
+              entities:
+                - entity: input_boolean.vacuum_zone_settings
+                  name: Zone Settings
+                - entity: input_select.vacuum_fan_speed_list
+                  name: Fan speed
+            style:
+                background-image: url("/local/pictures/cardback.png")
+                background-repeat: no-repeat
+                background-color: rgba(50,50,50,0.3)
+                background-size: 100% 68px                    
+                border-radius: 20px
+                border: solid 1px rgba(100,100,100,0.3)
+                box-shadow: 3px 3px rgba(0,0,0,0.4)
+                overflow: hidden
+
+#################################################################
+#                   Vacuum - INFO Value Card                    #
+#################################################################
+
+          - type: custom:card-modder
+            card:
+              type: custom:entity-attributes-card
+              entity: vacuum.xiaomi_vacuum_cleaner
+              heading_name: Status
+              heading_state: Value
+              filter:
+                include:
+                  - key: vacuum.xiaomi_vacuum_cleaner.cleaning_time
+                    name: Cleaning time (last)
+                    unit: minutes
+                  - key: vacuum.xiaomi_vacuum_cleaner.cleaned_area
+                    name: Clean surface (last)
+                    unit: meters
+                  - key: vacuum.xiaomi_vacuum_cleaner.cleaning_count
+                    name: Cleaning cycles (total)
+                  - key: vacuum.xiaomi_vacuum_cleaner.total_cleaning_time
+                    name: Cleaning time (total)
+                    unit: minutes
+                  - key: vacuum.xiaomi_vacuum_cleaner.total_cleaned_area
+                    name: Clean surface (total)
+                    unit: Area 
+            style:
+                background-image: url("/local/pictures/cardback.png")
+                background-repeat: no-repeat
+                background-color: rgba(50,50,50,0.3)
+                background-size: 100% 68px                    
+                border-radius: 20px
+                border: solid 1px rgba(100,100,100,0.3)
+                box-shadow: 3px 3px rgba(0,0,0,0.4)
+                overflow: hidden
+
+#################################################################
+#                   Vacuum - Status Value Card                  #
+#################################################################
+
+          - type: custom:card-modder
+            card:
+              type: custom:entity-attributes-card
+              entity: vacuum.xiaomi_vacuum_cleaner
+              heading_name: Status
+              heading_state: Value
+              filter:
+                include:
+                  - key: vacuum.xiaomi_vacuum_cleaner.do_not_disturb
+                    name: Do not disturb
+                  - key: vacuum.xiaomi_vacuum_cleaner.do_not_disturb_start
+                    name: Do not disturb start
+                  - key: vacuum.xiaomi_vacuum_cleaner.do_not_disturb_end
+                    name: Do not disturb end
+            style:
+                background-image: url("/local/pictures/cardback.png")
+                background-repeat: no-repeat
+                background-color: rgba(50,50,50,0.3)
+                background-size: 100% 68px                    
+                border-radius: 20px
+                border: solid 1px rgba(100,100,100,0.3)
+                box-shadow: 3px 3px rgba(0,0,0,0.4)
+                overflow: hidden
+
+
+####################################################
+#                   Switcher V2                    #
+####################################################  
+
+  - icon: mdi:fire
+    title: SwitcherV2
+    background: center / cover no-repeat url("/local/pictures/background.gif") fixed
+    cards:
+        
+        - type: vertical-stack
+          cards:
+             
+            - type: custom:card-modder
+              card:
+                type: picture-elements
+                image: /local/pictures/switcher/switcher.jpg
+                elements:
+                  #Schedule
+                  - type: icon
+                    icon: mdi:clock-outline
+                    entity: group.switcher_aio_v2_create_schedule
+                    style: {color: white, left: 85%, top: 9%}
+                  #Configuration
+                  - type: icon
+                    icon: mdi:google-circles-communities
+                    entity: group.switcher_aio_v2_configuration
+                    style: {color: white, left: 75%, top: 9%, --paper-item-icon-color: rgb(115,
+                      122: !!null '', 130): !!null ''}
+                  #Electricity
+                  - type: icon
+                    icon: mdi:flash-circle
+                    entity: switcher_aio.electric_current_sensor
+                    style: {color: white, left: 50%, top: 9%, --paper-item-icon-color: rgb(115,
+                      122: !!null '', 130): !!null ''}
+                  - type: state-label
+                    entity: switcher_aio.electric_current_sensor
+                    style: {color: white, left: 57%, top: 9%}
+                  #Time Left
+                  - type: icon
+                    icon: mdi:timelapse
+                    entity: switcher_aio.time_left_sensor
+                    style: {color: white, left: 25%, top: 9%}
+                  - type: state-label
+                    entity: switcher_aio.time_left_sensor
+                    style: {color: white, left: 35%, top: 9%}
+
+                  #Turn On for 15min
+                  - type: icon
+                    icon: mdi:circle-slice-2
+                    entity: switcher_aio.turn_on_timer_script
+                    tap_action: 
+                      action: call-service
+                      service: switcher_aio.turn_on_15_minutes
+                      service_data:
+                        entity_id: switcher_aio.turn_on_timer_script
+                    style: {color: white, left: 20%, top: 91%, --paper-item-icon-color: rgb(115,
+                      122: !!null '', 130): !!null ''}
+
+                  #Turn On for 30min
+                  - type: icon
+                    icon: mdi:circle-slice-4
+                    entity: switcher_aio.turn_on_timer_script
+                    tap_action: 
+                      action: call-service
+                      service: switcher_aio.turn_on_30_minutes
+                      service_data:
+                        entity_id: switcher_aio.turn_on_timer_script
+                    style: {color: white, left: 30%, top: 91%, --paper-item-icon-color: rgb(115,
+                      122: !!null '', 130): !!null ''}
+
+                  #Turn On for 45min
+                  - type: icon
+                    icon: mdi:circle-slice-6
+                    entity: switcher_aio.turn_on_timer_script
+                    tap_action: 
+                      action: call-service
+                      service: switcher_aio.turn_on_45_minutes
+                      service_data:
+                        entity_id: switcher_aio.turn_on_timer_script
+                    style: {color: white, left: 40%, top: 91%, --paper-item-icon-color: rgb(115,
+                      122: !!null '', 130): !!null ''}
+
+                  #Turn On for 60min
+                  - type: icon
+                    icon: mdi:circle-slice-8
+                    entity: switcher_aio.turn_on_timer_script
+                    tap_action: 
+                      action: call-service
+                      service: switcher_aio.turn_on_60_minutes
+                      service_data:
+                        entity_id: switcher_aio.turn_on_timer_script
+                    style: {color: white, left: 50%, top: 91%, --paper-item-icon-color: rgb(115,
+                      122: !!null '', 130): !!null ''}
+
+                  #Stop
+                  - type: icon
+                    icon: mdi:stop
+                    entity: switcher_aio.control_device_switch
+                    tap_action: 
+                      action: call-service
+                      service: switcher_aio.turn_off
+                      service_data:
+                        entity_id: switcher_aio.control_device_switch              
+                    style: {color: white, left: 80%, top: 91%, --paper-item-icon-color: rgb(115,
+                      122: !!null '', 130): !!null ''}
+              style:
+                border-radius: 15px
+                border: solid 1px rgba(100,100,100,0.3)
+                box-shadow: 3px 3px rgba(0,0,0,0.4)
+                overflow: hidden
+
+        - type: vertical-stack
+          cards:
+            - type: custom:card-modder
+              card:
+                  type: entities
+                  show_header_toggle: false
+                  title: Switcher Configuration
+                  entities:
+                    #- type: custom:time-input-row
+                    #  entity: switcher_aio.set_schedule_start_time_input_text
+                    #- type: custom:time-input-row
+                    #  entity: switcher_aio.set_end_start_time_input_text
+                    - switcher_aio.set_schedule_start_time_input_text
+                    - switcher_aio.set_end_start_time_input_text
+                    - type: custom:toggle-lock-entity-row
+                      entity: switcher_aio.select_sunday_input_boolean
+                    - type: custom:toggle-lock-entity-row
+                      entity: switcher_aio.select_monday_input_boolean
+                    - type: custom:toggle-lock-entity-row
+                      entity: switcher_aio.select_tuesday_input_boolean
+                    - type: custom:toggle-lock-entity-row
+                      entity: switcher_aio.select_wednesday_input_boolean
+                    - type: custom:toggle-lock-entity-row
+                      entity: switcher_aio.select_thursday_input_boolean
+                    - type: custom:toggle-lock-entity-row
+                      entity: switcher_aio.select_friday_input_boolean
+                    - type: custom:toggle-lock-entity-row
+                      entity: switcher_aio.select_saturday_input_boolean
+                    - switcher_aio.create_schedule_script
+              style:
+                border-radius: 15px
+                border: solid 1px rgba(100,100,100,0.3)
+                box-shadow: 3px 3px rgba(0,0,0,0.4)
+                overflow: hidden
+
+        - type: vertical-stack
+          cards:
+            - type: custom:card-modder
+              card:
+                  type: entities
+                  show_header_toggle: false
+                  title: Switcher Configuration
+                  entities:
+                    - switcher_aio.schedule_for_action_input_select
+                    - switcher_aio.action_to_perform_input_select
+                    - switcher_aio.perform_schedule_action_script
+                    - switcher_aio.schedule_id0_sensor
+                    - switcher_aio.schedule_id1_sensor
+                    - switcher_aio.schedule_id2_sensor
+                    - switcher_aio.schedule_id3_sensor
+                    - switcher_aio.schedule_id4_sensor
+                    - switcher_aio.schedule_id5_sensor
+                    - switcher_aio.schedule_id6_sensor
+                    - switcher_aio.schedule_id7_sensor
+              style:
+                border-radius: 15px
+                border: solid 1px rgba(100,100,100,0.3)
+                box-shadow: 3px 3px rgba(0,0,0,0.4)
+                overflow: hidden
+
+
+####################################################
+#                   Laundry Machine                #
+####################################################  
+
+  - icon: mdi:washing-machine
+    title: Laundry Machine
+    background: center / cover no-repeat url("/local/pictures/background.gif") fixed
+    cards:
+        - type: vertical-stack
+          cards:
+              #Tronsmart Information
+              - type: custom:card-modder
+                card:      
+                  type: picture-elements
+                  title: Laundry Machine
+                  image: /local/pictures/laundry_machine/laundry.jpg
+                  elements:
+                  #Current
+                  - type: icon
+                    icon: mdi:power-plug
+                    style: {color: white, left: 5%, top: 9%, pointer-events: none}
+                  - type: state-label
+                    entity: sensor.laundry_machine_current
+                    prefix: 'Current: '
+                    style: {color: white, left: 21%, top: 9%}
+                  #Volt
+                  - type: icon
+                    icon: mdi:power-plug
+                    style: {color: white, left: 37%, top: 9%, pointer-events: none}
+                  - type: state-label
+                    entity: sensor.laundry_machine_voltage
+                    prefix: 'Voltage: '
+                    style: {color: white, left: 53%, top: 9%}
+                  #Power
+                  - type: icon
+                    icon: mdi:power-plug
+                    style: {color: white, left: 70%, top: 9%, pointer-events: none}
+                  - type: state-label
+                    entity: sensor.laundry_machine_power
+                    prefix: 'Power: '
+                    style: {color: white, left: 85%, top: 9%}
+              #Energy
+                  #Today
+                  - type: icon
+                    icon: mdi:power-plug
+                    style: {color: white, left: 5%, top: 92%, pointer-events: none}
+                  - type: state-label
+                    entity: sensor.laundry_machine_energy_today
+                    prefix: 'Today: '
+                    style: {color: white, left: 19%, top: 92%}
+                  #Yesterday
+                  - type: icon
+                    icon: mdi:power-plug
+                    style: {color: white, left: 34%, top: 92%, pointer-events: none}
+                  - type: state-label
+                    entity: sensor.laundry_machine_energy_yesterday
+                    prefix: 'Yesterday: '
+                    style: {color: white, left: 51%, top: 92%}
+                  #Total
+                  - type: icon
+                    icon: mdi:power-plug
+                    style: {color: white, left: 70%, top: 92%, pointer-events: none}
+                  - type: state-label
+                    entity: sensor.laundry_machine_energy_total
+                    prefix: 'Total: '
+                    style: {color: white, left: 84%, top: 92%}
+
+                style:
+                  background-image: url("/local/pictures/cardback.png")
+                  background-repeat: no-repeat
+                  background-color: rgba(50,50,50,0.3)
+                  background-size: 100% 68px                    
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+                  overflow: hidden
+
+
+####################################################
+#                   Home Security                  #
+####################################################  
+
+  - icon: mdi:security
+    title: Home Security
+    background: center / cover no-repeat url("/local/pictures/background.gif") fixed
+    cards:
+        - type: vertical-stack
+          cards:
+              #Home Security
+              - type: custom:card-modder
+                card:
+                    type: picture-elements
+                    image: /local/pictures/security/security.jpg
+                    title: Home Security Alarm
+                    elements:
+                          #Alaram Panel
+                          - type: state-icon
+                            entity: alarm_control_panel.home_alarm
+                            style: {color: white, left: 40%, top: 82%}
+                          - type: state-label
+                            entity: alarm_control_panel.home_alarm
+                            style: {color: white, left: 40%, top: 94%, pointer-events: none}
+                          #Run Alarm
+                          - type: state-icon
+                            entity: script.run_alarm
+                            tap_action: 
+                              action: call-service
+                              service: script.turn_on
+                              service_data:
+                                entity_id: script.run_alarm
+                            style: {color: white, left: 60%, top: 82%}
+                          - type: state-label
+                            entity: script.run_alarm
+                            style: {color: white, left: 60%, top: 94%, pointer-events: none}
+                style: 
+                  background-image: url("/local/pictures/cardback.png")
+                  background-repeat: no-repeat
+                  background-color: rgba(50,50,50,0.3)
+                  background-size: 100% 68px                
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+                  overflow: hidden
+
+              - type: custom:card-modder
+                card: 
+                  #GateWay      
+                  type: picture-elements
+                  image: /local/pictures/security/gateway.jpg
+                  title: Xiaomi Gateway
+                  elements:
+                        #Gateway Light
+                        - type: state-icon
+                          entity: light.gateway_light_7811dcf781f1
+                          tap_action: 
+                             action: call-service
+                             service: light.toggle
+                             service_data:
+                               entity_id: light.gateway_light_7811dcf781f1
+                          style: {color: white, left: 30%, top: 76%}
+                        - type: state-label
+                          entity: light.gateway_light_7811dcf781f1
+                          style: {color: white, left: 30%, top: 92%}
+                        #Add New Xiaomi Device
+                        - type: state-icon
+                          entity: script.aqara_add_new_device
+                          tap_action: 
+                             action: call-service
+                             service: script.turn_on
+                             service_data:
+                               entity_id: script.aqara_add_new_device
+                          style: {color: white, left: 50%, top: 76%}
+                        - type: state-label
+                          entity: script.aqara_add_new_device
+                          style: {color: white, left: 50%, top: 92%, pointer-events: none}
+                        #Gateway Light Illumination
+                        - type: state-icon
+                          entity: sensor.illumination_7811dcf781f1
+                          style: {color: white, left: 70%, top: 76%}
+                        - type: state-label
+                          entity: sensor.illumination_7811dcf781f1
+                          style: {color: white, left: 70%, top: 92%, pointer-events: none}
+                style:
+                  background-image: url("/local/pictures/cardback.png")
+                  background-repeat: no-repeat
+                  background-color: rgba(50,50,50,0.3)
+                  background-size: 100% 68px                    
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+                  overflow: hidden
+
+              - type: horizontal-stack
+                cards:
+                  #Motion Sensor 
+                  - type: custom:card-modder
+                    card:      
+                      type: picture-elements
+                      image: /local/pictures/security/motion.png
+                      title: Motion Sensor
+                      elements:
+                            #Living Room On Mirrow Motion Sensor
+                            - type: state-icon
+                              entity: binary_sensor.motion_sensor_158d0002151738
+                              style: {color: white, left: 35%, top: 85% , pointer-events: none}
+                            - type: state-label
+                              entity: binary_sensor.motion_sensor_158d0002151738
+                              style: {color: white, left: 55%, top: 85%, pointer-events: none}
+                    style:
+                      background-image: url("/local/pictures/cardback.png")
+                      background-repeat: no-repeat
+                      background-color: rgba(50,50,50,0.3)                
+                      border-radius: 20px
+                      border: solid 1px rgba(100,100,100,0.3)
+                      box-shadow: 3px 3px rgba(0,0,0,0.4)
+                      overflow: hidden
+                  
+                  #Water Leak Sensor   
+                  - type: custom:card-modder
+                    card: 
+                      type: picture-elements
+                      image: /local/pictures/security/water_leak.png
+                      title: Water Sensor
+                      elements:
+                            #Laundry Water Leak Sensor
+                            - type: state-icon
+                              entity: binary_sensor.water_leak_sensor_158d0002704bbd
+                              style: {color: white, left: 25%, top: 85%, pointer-events: none}
+                            - type: state-label
+                              entity: binary_sensor.water_leak_sensor_158d0002704bbd
+                              style: {color: white, left: 35%, top: 85%, pointer-events: none}
+                            #Shower Water Leak Sensor
+                            - type: state-icon
+                              entity: binary_sensor.water_leak_sensor_158d0002564a0a
+                              style: {color: white, left: 60%, top: 85%, pointer-events: none}
+                            - type: state-label
+                              entity: binary_sensor.water_leak_sensor_158d0002564a0a
+                              style: {color: white, left: 70%, top: 85%, pointer-events: none}
+                    style:
+                      background-image: url("/local/pictures/cardback.png")
+                      background-repeat: no-repeat
+                      background-color: rgba(50,50,50,0.3)                
+                      border-radius: 20px
+                      border: solid 1px rgba(100,100,100,0.3)
+                      box-shadow: 3px 3px rgba(0,0,0,0.4)
+                      overflow: hidden
+
+              - type: horizontal-stack
+                cards:
+                  #Smoke Detector
+                  - type: custom:card-modder
+                    card: 
+                        type: picture-elements
+                        image: /local/pictures/security/smoke.jpg
+                        title: Smoke Detector
+                        elements: 
+                              - type: state-icon
+                                entity: binary_sensor.smoke_sensor_158d0002330c1f
+                                style: {color: white, left: 40%, top: 87%, pointer-events: none}
+                              - type: state-label
+                                entity: binary_sensor.smoke_sensor_158d0002330c1f
+                                style: {color: white, left: 55%, top: 87%,  pointer-events: none}
+                    style:
+                      background-image: url("/local/pictures/cardback.png")
+                      background-repeat: no-repeat
+                      background-color: rgba(50,50,50,0.3)
+                      background-size: 100% 68px                    
+                      border-radius: 20px
+                      border: solid 1px rgba(100,100,100,0.3)
+                      box-shadow: 3px 3px rgba(0,0,0,0.4)
+                      overflow: hidden
+
+                  #Xiaomi Plug - Office Fan
+                  - type: custom:card-modder
+                    card: 
+                      type: picture-elements
+                      image: /local/pictures/security/xiaomiplug.jpg
+                      title: Xiaomi Plug
+                      elements:
+                            - type: state-icon
+                              tap_action: call-service
+                              service: switch.toggle
+                              entity: switch.plug_158d0001bc0fe3
+                              style: {color: white, left: 40%, top: 86%}
+                            - type: state-label
+                              entity: switch.plug_158d0001bc0fe3
+                              style: {color: white, left: 50%, top: 87%}
+                    style:
+                      background-image: url("/local/pictures/cardback.png")
+                      background-repeat: no-repeat
+                      background-color: rgba(50,50,50,0.3)
+                      background-size: 100% 68px                    
+                      border-radius: 20px
+                      border: solid 1px rgba(100,100,100,0.3)
+                      box-shadow: 3px 3px rgba(0,0,0,0.4)
+                      overflow: hidden
+
+        - type: vertical-stack
+          cards:
+              #Temperature Sensors
+              - type: custom:card-modder
+                card:
+                  type: picture-elements
+                  image: /local/pictures/security/temp.jpg
+                  title: Temperature Sensors
+                  elements:
+                        #Living Room On Right Door
+                        - type: state-icon
+                          entity: sensor.temperature_158d000244da18
+                          #sensor.temperature_158d000244da18
+                          style: {color: white, left: 20%, top: 83%}
+                        - type: state-label
+                          entity: sensor.temperature_158d000244da18
+                          #sensor.temperature_158d000244da18
+                          style: {color: white, left: 20%, top: 93%}
+                        #Kitchen on Landry's Room Door
+                        - type: state-icon
+                          entity: sensor.temperature_158d0002323847
+                          #sensor.temperature_158d0002323847
+                          style: {color: white, left: 40%, top: 83%}
+                        - type: state-label
+                          entity: sensor.temperature_158d0002323847
+                          #sensor.temperature_158d0002323847
+                          style: {color: white, left: 40%, top: 93%}
+                        #Bedroom On Door Next To The Window
+                        - type: state-icon
+                          entity: sensor.temperature_158d00023a09d6
+                          #sensor.temperature_158d00023a09d6
+                          style: {color: white, left: 60%, top: 83%}
+                        - type: state-label
+                          entity: sensor.temperature_158d00023a09d6
+                          #sensor.temperature_158d00023a09d6
+                          style: {color: white, left: 60%, top: 93%}
+                        #Work Room On Door Next to Router
+                        - type: state-icon
+                          entity: sensor.temperature_158d00023279f9
+                          #sensor.temperature_158d00023279f9
+                          style: {color: white, left: 80%, top: 83%}
+                        - type: state-label
+                          entity: sensor.temperature_158d00023279f9
+                          #sensor.temperature_158d00023279f9
+                          style: {color: white, left: 80%, top: 93%}
+                style:
+                  background-image: url("/local/pictures/cardback.png")
+                  background-repeat: no-repeat
+                  background-color: rgba(50,50,50,0.3)
+                  background-size: 100% 68px                    
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+                  overflow: hidden
+             
+              #Windows Sensor
+              - type: custom:card-modder
+                card:               
+                  type: picture-elements
+                  image: /local/pictures/security/window.jpg
+                  title: Windows Sensor
+                  elements:
+                        #LR Right Window
+                        - type: state-icon
+                          entity: binary_sensor.door_window_sensor_158d0002417022
+                          #binary_sensor.door_window_sensor_158d0002417022
+                          style: {color: white, left: 18%, top: 83%}
+                        - type: state-label
+                          entity: binary_sensor.door_window_sensor_158d0002417022
+                          #binary_sensor.door_window_sensor_158d0002417022
+                          prefix: 'LR Right: '
+                          style: {color: white, left: 20%, top: 93%}
+                        #LR Left Window
+                        - type: state-icon
+                          entity: binary_sensor.door_window_sensor_158d0001e7ea4c
+                          #binary_sensor.door_window_sensor_158d0001e7ea4c
+                          style: {color: white, left: 50%, top: 83%}
+                        - type: state-label
+                          entity: binary_sensor.door_window_sensor_158d0001e7ea4c
+                          #binary_sensor.door_window_sensor_158d0001e7ea4c
+                          prefix: 'LR Left: '
+                          style: {color: white, left: 50%, top: 93%}
+                        #Workroom Window
+                        - type: state-icon
+                          entity: binary_sensor.door_window_sensor_158d00027b235e
+                          #binary_sensor.door_window_sensor_158d00027b235e
+                          style: {color: white, left: 82%, top: 83%}
+                        - type: state-label
+                          entity: binary_sensor.door_window_sensor_158d00027b235e
+                          #binary_sensor.door_window_sensor_158d00027b235e
+                          prefix: 'Work Room: '
+                          style: {color: white, left: 82%, top: 93%}
+                        #Laundry Room Window
+                        - type: state-icon
+                          entity: binary_sensor.door_window_sensor_158d0001e7b21d
+                          #binary_sensor.door_window_sensor_158d0001e7b21d
+                          style: {color: white, top: 8%, left: 17%}
+                        - type: state-label
+                          entity: binary_sensor.door_window_sensor_158d0001e7b21d
+                          #binary_sensor.door_window_sensor_158d0001e7b21d
+                          prefix: 'Laundry R: '
+                          style: {color: white, left: 17%, top: 18%}
+                        #Kitchen Window
+                        - type: state-icon
+                          entity: binary_sensor.door_window_sensor_158d0001e7baf5
+                          #binary_sensor.door_window_sensor_158d0001e7baf5
+                          style: {color: white, left: 50%, top: 8%}
+                        - type: state-label
+                          entity: binary_sensor.door_window_sensor_158d0001e7baf5
+                          #binary_sensor.door_window_sensor_158d0001e7baf5
+                          prefix: 'Kitchen: '
+                          style: {color: white, left: 50%, top: 18%}
+                        #Bedroom Window
+                        - type: state-icon
+                          entity: binary_sensor.door_window_sensor_158d000242ea39
+                          #binary_sensor.door_window_sensor_158d000242ea39
+                          style: {color: white, left: 83%, top: 8%}
+                        - type: state-label
+                          entity: binary_sensor.door_window_sensor_158d000242ea39
+                          #binary_sensor.door_window_sensor_158d000242ea39
+                          prefix: 'Bedroom: '
+                          style: {color: white, left: 83%, top: 18%}
+                style:
+                  background-image: url("/local/pictures/cardback.png")
+                  background-repeat: no-repeat
+                  background-color: rgba(50,50,50,0.3)
+                  background-size: 100% 68px                    
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+                  overflow: hidden
+              
+               #Window Battery Level 
+              - type: custom:card-modder
+                card:
+                  type: picture-elements
+                  image: /local/pictures/security/window_sensor_battery.jpg
+                  title: Window Sensor Battery Level
+                  elements:
+                        #Battery Level of LR Right Window
+                        - type: state-icon
+                          entity: sensor.lr_window_right_batterylevel
+                          style: {color: white, left: 18%, top: 85%}
+                        - type: state-label
+                          entity: sensor.lr_window_right_batterylevel
+                          prefix: 'LR Right: '
+                          style: {color: white, left: 20%, top: 95%}
+                        #Battery Level of LR Left Window
+                        - type: state-icon
+                          entity: sensor.lr_window_left_batterylevel
+                          style: {color: white, left: 50%, top: 85%}
+                        - type: state-label
+                          entity: sensor.lr_window_left_batterylevel
+                          prefix: 'LR Left: '
+                          style: {color: white, left: 50%, top: 95%}
+                        #Battery Level of Work Room Window
+                        - type: state-icon
+                          entity: sensor.work_window_batterylevel
+                          style: {color: white, left: 82%, top: 85%}
+                        - type: state-label
+                          entity: sensor.work_window_batterylevel
+                          prefix: 'Work Room: '
+                          style: {color: white, left: 82%, top: 95%}
+                        #Battery Level of Laundry Window
+                        - type: state-icon
+                          entity: sensor.laundry_window_batterylevel
+                          style: {color: white, left: 17%, top: 6%}
+                        - type: state-label
+                          entity: sensor.laundry_window_batterylevel
+                          prefix: 'Laundry R: '
+                          style: {color: white, left: 17%, top: 16%}
+                        #Battery Level of Kitchen Window
+                        - type: state-icon
+                          entity: sensor.kitchen_window_batterylevel
+                          style: {color: white, left: 50%, top: 6%}
+                        - type: state-label
+                          entity: sensor.kitchen_window_batterylevel
+                          prefix: 'Kitchen: '
+                          style: {color: white, left: 50%, top: 16%}
+                        #Battery Level of Bedroom Window
+                        - type: state-icon
+                          entity: sensor.bedroom_window_batterylevel
+                          style: {color: white, left: 83%, top: 6%}
+                        - type: state-label
+                          entity: sensor.bedroom_window_batterylevel
+                          prefix: 'Bedroom: '
+                          style: {color: white, left: 83%, top: 16%}
+                style:
+                  background-image: url("/local/pictures/cardback.png")
+                  background-repeat: no-repeat
+                  background-color: rgba(50,50,50,0.3)
+                  background-size: 100% 68px                    
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+                  overflow: hidden
+                  
+
+
+        - type: vertical-stack
+          cards:
+              - type: custom:card-modder
+                card:
+                  #Humidity Sensors
+                  type: picture-elements
+                  image: /local/pictures/security/humidity.jpg
+                  title: Humidity Sensors
+                  elements:
+                        #Living Room
+                        - type: state-icon
+                          entity: sensor.humidity_158d000244da18
+                          #sensor.humidity_158d000244da18
+                          style: {color: white, left: 20%, top: 84%}
+                        - type: state-label
+                          entity: sensor.humidity_158d000244da18
+                          #sensor.humidity_158d000244da18
+                          style: {color: white, left: 20%, top: 94%}
+                        #Kitchen
+                        - type: state-icon
+                          entity: sensor.humidity_158d0002323847
+                          #sensor.humidity_158d0002323847
+                          style: {color: white, left: 40%, top: 84%}
+                        - type: state-label
+                          entity: sensor.humidity_158d0002323847
+                          #sensor.humidity_158d0002323847
+                          style: {color: white, left: 40%, top: 94%}
+                        #Bedroom
+                        - type: state-icon
+                          entity: sensor.humidity_158d00023a09d6
+                          #sensor.humidity_158d00023a09d6
+                          style: {color: white, left: 60%, top: 84%}
+                        - type: state-label
+                          entity: sensor.humidity_158d00023a09d6
+                          #sensor.humidity_158d00023a09d6
+                          style: {color: white, left: 60%, top: 94%}
+                        #Work Room
+                        - type: state-icon
+                          entity: sensor.humidity_158d00023279f9
+                          #sensor.humidity_158d00023279f9
+                          style: {color: white, left: 80%, top: 84%}
+                        - type: state-label
+                          entity: sensor.humidity_158d00023279f9
+                          #sensor.humidity_158d00023279f9
+                          style: {color: white, left: 80%, top: 94%}
+                style:
+                  background-image: url("/local/pictures/cardback.png")
+                  background-repeat: no-repeat
+                  background-color: rgba(50,50,50,0.3)
+                  background-size: 100% 68px                    
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+                  overflow: hidden
+
+              #Temperature&Humidty Battery Level
+              - type: custom:card-modder
+                card:
+                    type: picture-elements
+                    title: Temp Sensor Battery Level
+                    image: /local/pictures/security/temp_sensor_battery.jpg
+                    elements:
+                          #Battery Level of Living Room Temperature Sensor
+                          - type: state-icon
+                            entity: sensor.temperature_livingroom_batterylevel
+                            style: {color: white, left: 25%, top: 85%}
+                          - type: state-label
+                            entity: sensor.temperature_livingroom_batterylevel
+                            prefix: 'Living Room: '
+                            style: {color: white, left: 25%, top: 95%}
+                          #Battery Level of Workroom Temperature Sensor
+                          - type: state-icon
+                            entity: sensor.temperature_workroom_batterylevel
+                            style: {color: white, left: 75%, top: 85%}
+                          - type: state-label
+                            entity: sensor.temperature_workroom_batterylevel
+                            prefix: 'Work Room: '
+                            style: {color: white, left: 75%, top: 95%}
+                          #Battery Level of Kitchen Temperature Sensor
+                          - type: state-icon
+                            entity: sensor.temperature_kitchen_batterylevel
+                            style: {color: white, left: 25%, top: 6%}
+                          - type: state-label
+                            entity: sensor.temperature_kitchen_batterylevel
+                            prefix: 'Kitchen: '
+                            style: {color: white, left: 25%, top: 16%}
+                          #Battery Level of Bedroom Temperature Sensor
+                          - type: state-icon
+                            entity: sensor.temperature_bedroom_batterylevel
+                            style: {color: white, left: 75%, top: 6%}
+                          - type: state-label
+                            entity: sensor.temperature_bedroom_batterylevel
+                            prefix: 'Bedroom: '
+                            style: {color: white, left: 75%, top: 16%}
+                style:
+                  background-image: url("/local/pictures/cardback.png")
+                  background-repeat: no-repeat
+                  background-color: rgba(50,50,50,0.3)
+                  background-size: 100% 68px                    
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+                  overflow: hidden
+
+              #Switch,Motion & Water Battery Level
+              - type: custom:card-modder
+                card:                        
+                  type: picture-elements
+                  image: /local/pictures/security/xiaomi_battery.jpg
+                  title: Switch,Motion & Water Battery Level
+                  elements:
+                        #Battery Level of Bedroom Switch
+                        - type: state-icon
+                          entity: sensor.switch_br_batterylevel
+                          style: {color: white, left: 25%, top: 6%}
+                        - type: state-label
+                          entity: sensor.switch_br_batterylevel
+                          prefix: 'Switch: '
+                          style: {color: white, left: 25%, top: 16%}
+                        #Battery Level of Office Switch
+                        - type: state-icon
+                          entity: sensor.switch_office_batterylevel
+                          style: {color: white, left: 75%, top: 6%}
+                        - type: state-label
+                          entity: sensor.switch_office_batterylevel
+                          prefix: 'Switch: '
+                          style: {color: white, left: 75%, top: 16%}
+                        #Battery Level of Laundry's Water Sensor
+                        - type: state-icon
+                          entity: sensor.water_sensor_laundry_batterylevel
+                          style: {color: white, left: 20%, top: 85%}
+                        - type: state-label
+                          entity: sensor.water_sensor_laundry_batterylevel
+                          prefix: 'Laundry: '
+                          style: {color: white, left: 20%, top: 95%}
+                        #Battery Level of Laundry's Water Sensor
+                        - type: state-icon
+                          entity: sensor.water_sensor_shower_batterylevel
+                          style: {color: white, left: 50%, top: 85%}
+                        - type: state-label
+                          entity: sensor.water_sensor_shower_batterylevel
+                          prefix: 'Shower: '
+                          style: {color: white, left: 50%, top: 95%}
+                        #Battery Level Mirror's Motion Sensor
+                        - type: state-icon
+                          entity: sensor.motion_sensor_batterylevel
+                          style: {color: white, left: 80%, top: 85%}
+                        - type: state-label
+                          entity: sensor.motion_sensor_batterylevel
+                          prefix: 'Mirror: '
+                          style: {color: white, left: 80%, top: 95%}
+                        
+                style:
+                  background-image: url("/local/pictures/cardback.png")
+                  background-repeat: no-repeat
+                  background-color: rgba(50,50,50,0.3)
+                  background-size: 100% 68px                    
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)      
+                  overflow: hidden      
+
+####################################################
+#                   Maintanace                     #
+####################################################  
+
+  - icon: mdi:worker
+    title: Maintanace
+    background: center / cover no-repeat url("/local/pictures/background.gif") fixed
+    cards:
+        - type: vertical-stack
+          cards:
+              #Tronsmart Information
+              - type: custom:card-modder
+                card:      
+                  type: picture-elements
+                  title: Intel NUC
+                  image: /local/pictures/maintanace/nuc_server.jpg
+                  elements:
+                  #Disk Use Percent Home
+                  - type: state-icon
+                    entity: sensor.disk_use_percent_home
+                    style: {color: white, left: 10%, top: 5%}
+                  - type: state-label
+                    entity: sensor.disk_use_percent_home
+                    prefix: 'Disk Use: '
+                    style: {color: white, left: 25%, top: 5%}
+                  #Disk Free Home
+                  - type: state-icon
+                    entity: sensor.disk_free_home
+                    style: {color: white, left: 10%, top: 13%}
+                  - type: state-label
+                    entity: sensor.disk_free_home
+                    prefix: 'Disk Free: '
+                    style: {color: white, left: 28%, top: 13%}
+                  #Memory Free
+                  - type: state-icon
+                    entity: sensor.memory_free
+                    style: {color: white, left: 50%, top: 5%}
+                  - type: state-label
+                    entity: sensor.memory_free
+                    prefix: 'Mem Free: '
+                    style: {color: white, left: 70%, top: 5%}
+                  #Memory Use Percent
+                  - type: state-icon
+                    entity: sensor.memory_use_percent
+                    style: {color: white, left: 50%, top: 13%}
+                  - type: state-label
+                    entity: sensor.memory_use_percent
+                    prefix: 'Mem Use: '
+                    style: {color: white, left: 70%, top: 13%}
+
+                  #Uptime
+                  - type: state-label
+                    entity: sensor.uptime_in_days
+                    prefix: 'Days: '
+                    style: {color: white, left: 15%, top: 90%}
+                  - type: state-label
+                    entity: sensor.uptime_in_hours
+                    prefix: 'Hours: '
+                    style: {color: white, left: 45%, top: 90%}
+                  - type: state-label
+                    entity: sensor.uptime_in_minutes
+                    prefix: 'Minutes: '
+                    style: {color: white, left: 80%, top: 90%}
+
+                style:
+                  background-image: url("/local/pictures/cardback.png")
+                  background-repeat: no-repeat
+                  background-color: rgba(50,50,50,0.3)
+                  background-size: 100% 68px                    
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+                  overflow: hidden
+
+              #Home Security
+              - type: custom:card-modder
+                card:
+                    type: picture-elements
+                    title: Components Information
+                    image: /local/pictures/maintanace/automation.jpg
+                    elements:
+                          #All Automations
+                          - type: custom:toggle-lock-entity-row
+                            entity: group.all_automations
+                            style: {color: white, left: 50%, top: 10%}
+                          #Total/All Automations
+                          - type: state-label
+                            entity: sensor.automation_all
+                            suffix: ' automations'
+                            style: {color: white, left: 25%, top: 25%}
+                          #Automations On
+                          - type: state-label
+                            entity: sensor.automation_on
+                            suffix: ' automations'
+                            style: {color: white, left: 75%, top: 25%}    
+                          #Sensors Count
+                          - type: state-label
+                            entity: sensor.sensor_count
+                            prefix: 'Sensors: '
+                            style: {color: white, left: 25%, top: 40%}   
+                          #Binary_Sensors Count
+                          - type: state-label
+                            entity: sensor.binary_count
+                            prefix: 'Binary Sensors: '
+                            style: {color: white, left: 75%, top: 40%}   
+                          #Lights Count
+                          - type: state-label
+                            entity: sensor.lights_count
+                            prefix: 'Lights: '
+                            style: {color: white, left: 25%, top: 55%} 
+                          #Scripts Count
+                          - type: state-label
+                            entity: sensor.script_count
+                            prefix: 'Scripts: '
+                            style: {color: white, left: 75%, top: 55%}   
+                          #Switches Count
+                          - type: state-label
+                            entity: sensor.switch_count
+                            prefix: 'Switches: '
+                            style: {color: white, left: 25%, top: 70%}   
+                          #Device_Tracker Count
+                          - type: state-label
+                            entity: sensor.tracker_count
+                            prefix: 'Device Trackers: '
+                            style: {color: white, left: 75%, top: 70%}   
+                          #Zone Count
+                          - type: state-label
+                            entity: sensor.zone_count
+                            prefix: 'Zones: '
+                            style: {color: white, left: 50%, top: 85%}         
+                style:
+                  background-image: url("/local/pictures/cardback.png")
+                  background-repeat: no-repeat
+                  background-color: rgba(50,50,50,0.3)
+                  background-size: 100% 68px                    
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+                  overflow: hidden
+
+              #Data Base Information
+              - type: custom:card-modder
+                card:
+                  type: picture-elements
+                  title: Data Base Information
+                  image: /local/pictures/maintanace/db.jpg
+                  elements:
+              #Left Side:            
+                    #DB Size
+                    - type: state-icon
+                      entity: sensor.full_db_size
+                      style: {color: white, left: 5%, top: 75%}
+                    - type: state-label
+                      entity: sensor.full_db_size
+                      prefix: 'DB Size: '
+                      style: {color: white, left: 23%, top: 75%}
+                    #Event Table Size
+                    - type: state-icon
+                      entity: sensor.events_table_size
+                      style: {color: white, left: 5%, top: 85%}
+                    - type: state-label
+                      entity: sensor.events_table_size
+                      prefix: 'Event Table Size: '
+                      style: {color: white, left: 29%, top: 85%}
+                    #States Table Size
+                    - type: state-icon
+                      entity: sensor.states_table_size
+                      style: {color: white, left: 5%, top: 95%}
+                    - type: state-label
+                      entity: sensor.states_table_size
+                      prefix: 'States Table Size: '
+                      style: {color: white, left: 29%, top: 95%}
+              #Right Side:
+                    #Schema Changes Table Size
+                    - type: state-icon
+                      entity: sensor.schema_changes_table_size
+                      style: {color: white, left: 53%, top: 75%}
+                    - type: state-label
+                      entity: sensor.schema_changes_table_size
+                      prefix: 'Schema Table Size: '
+                      style: {color: white, left: 78%, top: 75%}
+                    #Recorder Runs Table Size    
+                    - type: state-icon
+                      entity: sensor.recorder_runs_table_size
+                      style: {color: white, left: 53%, top: 85%}
+                    - type: state-label
+                      entity: sensor.recorder_runs_table_size
+                      prefix: 'Recorder Table Size: '
+                      style: {color: white, left: 78%, top: 85%}
+                style:
+                    background-image: url("/local/pictures/cardback.png")
+                    background-repeat: no-repeat
+                    background-color: rgba(50,50,50,0.3)
+                    background-size: 100% 68px                    
+                    border-radius: 20px
+                    border: solid 1px rgba(100,100,100,0.3)
+                    box-shadow: 3px 3px rgba(0,0,0,0.4)     
+                    overflow: hidden    
+
+        - type: vertical-stack
+          cards:
+            #Home Assistant Version
+            - type: custom:card-modder
+              card:
+                type: picture-elements
+                title: Home Assistant Version
+                image: /local/pictures/maintanace/ha.png
+                elements:
+                  #Current Version
+                  - type: state-icon
+                    entity: sensor.current_version
+                    style: {color: white, left: 25%, top: 40%}
+                  - type: state-label
+                    entity: sensor.current_version
+                    prefix: 'Current Version: '
+                    style: {color: white, left: 50%, top: 40%} 
+                  - type: state-icon
+                    entity: sensor.current_version
+                    style: {color: white, left: 75%, top: 40%}
+                  #GitHub Version
+                  - type: state-icon
+                    entity: sensor.ha_github_version
+                    style: {color: white, left: 30%, top: 84%}
+                  - type: state-label
+                    entity: sensor.ha_github_version
+                    prefix: 'GitHub Version: '
+                    style: {color: white, left: 30%, top: 94%}
+                  #PyPi Version
+                  - type: state-icon
+                    entity: sensor.ha_pypi_version
+                    style: {color: white, left: 70%, top: 84%}
+                  - type: state-label
+                    entity: sensor.ha_pypi_version
+                    prefix: 'PyPI Version: '
+                    style: {color: white, left: 70%, top: 94%}
+              style:
+                  background-image: url("/local/pictures/cardback.png")
+                  background-repeat: no-repeat
+                  background-color: rgba(50,50,50,0.3)
+                  background-size: 100% 68px                    
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4)
+                  overflow: hidden
+
+            #HA-Dockermon
+            - type: custom:card-modder
+              card:
+                  type: entities
+                  show_header_toggle: false
+                  title: Docker Containers
+                  entities:
+                    - type: custom:toggle-lock-entity-row
+                      entity: switch.hadockermonduplicati
+                    - type: custom:toggle-lock-entity-row
+                      entity: switch.hadockermonha_dockermon
+                    - type: custom:toggle-lock-entity-row
+                      entity: switch.hadockermonheimdall
+                    - type: custom:toggle-lock-entity-row
+                      entity: switch.hadockermonhome_assistant
+                    - type: custom:toggle-lock-entity-row
+                      entity: switch.hadockermonmariadb
+                    - type: custom:toggle-lock-entity-row
+                      entity: switch.hadockermonmosquitto
+                    - type: custom:toggle-lock-entity-row
+                      entity: switch.hadockermonportainer
+                    #- type: custom:toggle-lock-entity-row
+                    #  entity: switch.hadockermontasmoadmin
+                    - type: custom:toggle-lock-entity-row
+                      entity: switch.hadockermontraccar
+                    - type: custom:toggle-lock-entity-row
+                      entity: switch.hadockermonunifi
+                    - type: custom:toggle-lock-entity-row
+                      entity: switch.hadockermonwatchtower
+              style:
+                background-image: url("/local/pictures/cardback.png")
+                background-repeat: no-repeat
+                background-color: rgba(50,50,50,0.3)
+                background-size: 100% 68px                    
+                border-radius: 20px
+                border: solid 1px rgba(100,100,100,0.3)
+                box-shadow: 3px 3px rgba(0,0,0,0.4)  
+                overflow: hidden
+
+              #Custom Components Tracker
+            - type: custom:card-modder
+              card:
+                  type: custom:tracker-card
+                  title: "Update Custome Components"
+                  trackers:
+                    - sensor.custom_card_tracker
+                    - sensor.custom_component_tracker
+              style:
+                  background-image: url("/local/pictures/cardback.png")
+                  background-repeat: no-repeat
+                  background-color: rgba(50,50,50,0.3)
+                  background-size: 100% 68px                    
+                  border-radius: 20px
+                  border: solid 1px rgba(100,100,100,0.3)
+                  box-shadow: 3px 3px rgba(0,0,0,0.4) 
+                  overflow: hidden
+        
+        
+        - type: vertical-stack
+          cards:
+            #Maintanace Scripts
+            - type: custom:card-modder
+              card:
+                  type: entities
+                  show_header_toggle: false
+                  title: Maintenance Tools
+                  entities:
+                    - script.restart_home_assistant
+                    - script.reboot_os
+                    - script.purge_db
+                    - input_select.fix_entity
+                    - input_select.state_entity
+                    - script.fix_entity_state
+              style:
+                background-image: url("/local/pictures/cardback.png")
+                background-repeat: no-repeat
+                background-color: rgba(50,50,50,0.3)
+                background-size: 100% 68px                    
+                border-radius: 20px
+                border: solid 1px rgba(100,100,100,0.3)
+                box-shadow: 3px 3px rgba(0,0,0,0.4)  
+                overflow: hidden
+            
+            #SSL Lets-Encrypt
+            - type: custom:card-modder
+              card:
+                type: picture-entity
+                title: SSL Lets-Encrypt
+                image: /local/pictures/maintanace/ssl.png
+                entity: sensor.ssl_certificate_expiry
+              style:
+                background-image: url("/local/pictures/cardback.png")
+                background-repeat: no-repeat
+                background-color: rgba(50,50,50,0.3)
+                background-size: 100% 68px                    
+                border-radius: 20px
+                border: solid 1px rgba(100,100,100,0.3)
+                box-shadow: 3px 3px rgba(0,0,0,0.4)
+                overflow: hidden
+
+            #Fastcom
+            - type: custom:card-modder
+              card:
+                type: picture-entity
+                title: SSL Lets-Encrypt
+                image: /local/pictures/maintanace/fast.jpg
+                entity: sensor.fast_com_download
+              style:
+                background-image: url("/local/pictures/cardback.png")
+                background-repeat: no-repeat
+                background-color: rgba(50,50,50,0.3)
+                background-size: 100% 68px                    
+                border-radius: 20px
+                border: solid 1px rgba(100,100,100,0.3)
+                box-shadow: 3px 3px rgba(0,0,0,0.4)
+                overflow: hidden
+
+            #Speedtest
+            - type: custom:card-modder
+              card:
+                type: picture-elements
+                image: /local/pictures/maintanace/speedtest.png
+                elements:
+                  #Speedtest Download                  
+                  - type: state-icon
+                    entity: sensor.speedtest_download
+                    style: {color: white, left: 5%, top: 90%}
+                  - type: state-label
+                    entity: sensor.speedtest_download
+                    style: {color: white, left: 22%, top: 90%}
+                  #Speedtest Upload
+                  - type: state-icon
+                    entity: sensor.speedtest_upload
+                    style: {color: white, left: 40%, top: 90%}
+                  - type: state-label
+                    entity: sensor.speedtest_upload
+                    style: {color: white, left: 56%, top: 90%}
+                  #Speedtest Ping
+                  - type: state-icon
+                    entity: sensor.speedtest_ping
+                    style: {color: white, left: 73%, top: 90%}
+                  - type: state-label
+                    entity: sensor.speedtest_ping
+                    style: {color: white, left: 88%, top: 90%}
+              style:
+                background-image: url("/local/pictures/cardback.png")
+                background-repeat: no-repeat
+                background-color: rgba(50,50,50,0.3)
+                background-size: 100% 68px                    
+                border-radius: 20px
+                border: solid 1px rgba(100,100,100,0.3)
+                box-shadow: 3px 3px rgba(0,0,0,0.4)
+                overflow: hidden

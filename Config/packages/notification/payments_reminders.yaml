@@ -1,0 +1,73 @@
+###################################################################################
+#   @author         :   Naty Laza
+#   @date           :   04/01/2019
+#   @package        :   Payments Reminders
+#   @description    :   Electricity,Tax,Water,Rent,Gas,Internet
+###################################################################################
+
+####################################################
+#                   Customize                      #
+####################################################
+
+homeassistant:
+  customize:
+
+####################################################
+#                    Automation                    #
+####################################################
+automation:
+
+####################################################
+#                  Payments Reminder               #
+####################################################
+
+- id: Notify Via Telegram Payments Reminder
+  alias: Notify Via Telegram Payments Reminder
+  trigger:
+  - platform: time
+    at: '18:00:00'
+  condition:
+    - condition: or
+      conditions:  
+        - condition: template
+          value_template: '{{ now().day == 25}}'
+        - condition: template
+          value_template: '{{ now().day == 28}}'
+        - condition: template
+          value_template: '{{ now().day == 30}}'
+  action:
+  - data_template:
+      title: '*Payments Reminder*'
+      message: |
+        Don't Forget Paying the Bills & Transfer Money to the Shared Acount! 
+        Check List:
+        - Electricity
+        - Tax
+        - Water
+        - Rent
+        - Gas
+    service: notify.all
+
+- id: Notify Via Telegram Interent Renew Contract Reminder
+  alias: Notify Via Telegram Interent Renew Contract Reminder
+  trigger:
+  - platform: time
+    at: '18:00:00'
+  condition:
+    - condition: or
+      conditions:  
+        - condition: template
+          value_template: '{{ now().day == 13 and now().month == 12 }}'
+        - condition: template
+          value_template: '{{ now().day == 3 and now().month == 12 }}'
+        - condition: template
+          value_template: '{{ now().day == 25 and now().month == 11 }}'
+  action:
+  - data_template:
+      title: '*Interent Renew Contract Reminder*'
+      message: |
+        Don't Forget to renew the contract with Bezeq unless you want to pay 140 ils.
+    service: notify.all
+
+## TODO
+## Add other billing reminders in order to track its costs after 1 year ##

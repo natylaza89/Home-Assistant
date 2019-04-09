@@ -1,0 +1,360 @@
+###############################################################################
+#   @author         :   Naty Laza
+#   @date           :   04/01/2019
+#   @package        :   Living Room AC
+###############################################################################
+
+####################################################
+#                   Customize                      #
+####################################################
+
+homeassistant:
+  customize_domain:
+    automation:
+      initial_state: 'on'
+      
+  customize:
+
+     switch.lrac_power:
+      friendly_name: AC Power
+      icon: mdi:air-conditioner
+      assumed_state: false
+      
+     input_boolean.lr_ac_status:
+      friendly_name: "Status"
+      icon: mdi:air-conditioner
+     sensor.lr_ac_temp_sensor:
+      friendly_name: "Current Temperature"
+      icon: mdi:thermometer
+     cover.lr_ac_temp_cover:
+      friendly_name: "Change Temperature"
+      icon: mdi:temperature-celsius
+     input_select.lr_ac_mode:
+      friendly_name: "Mode"
+      icon: mdi:weather-windy-variant
+     input_select.lr_ac_fan:
+      friendly_name: "Fan"
+      icon: mdi:fan
+     input_select.br_fan:
+      friendly_name: "Mode"
+      icon: mdi:weather-windy-variant
+     script.temp_up:
+      icon: mdi:arrow-up-thick
+      assumed_state: false
+      friendly_name: UP
+     script.temp_down:
+      icon: mdi:arrow-down-thick
+      assumed_state: false
+      friendly_name: DOWN
+
+####################################################
+#            Living Room AC - Climiate             #
+####################################################  
+
+climate:
+  - platform: sensibo
+    api_key: !secret sensibo_api_key
+
+#climate:
+#- platform: broadlink
+#  name: ac
+#  host: !secret broadlink_host
+#  mac: !secret broadlink_mac
+#  ircodes_ini: !secret ac_codes
+#  min_temp: 16
+#  max_temp: 30
+#  target_temp: 25
+#  temp_sensor: sensor.temperature_158d000244da18
+#  default_operation: cool
+#  default_fan_mode: high
+#  customize:
+#    operations:
+#      - idle
+#      - cool
+#      - fan
+#      - heat
+#    fan_modes:
+#      - low
+#      - mid
+#      - high
+
+####################################################
+#                  Input Select                    #
+####################################################
+
+input_select:
+#AC Mode Input Select 
+ lr_ac_mode:
+  name: lr_ac_mode
+  options:
+    - COOL
+    - HEAT
+
+#AC Fan Mode Input Select 
+ lr_ac_fan:
+  name: lr_ac_fan
+  options:
+    - LOW
+    - MED
+    - HIGH
+
+####################################################
+#                   Input Text                     #
+####################################################
+
+input_text:
+#Temperature Controller Via Input Text 
+ lr_ac_temp_text:
+  name: lr_ac_temp_text
+  initial: 24
+
+####################################################
+#                   Input Boolean                  #
+####################################################
+
+input_boolean:
+#Power Controller Via Input Boolean
+ lr_ac_status:
+  name: "lr_ac_status"
+  initial: off
+
+####################################################
+#                      Switch                      #
+####################################################
+
+# Broadlink Configuration
+switch:  
+  - platform: broadlink
+    host: !secret broadlink_host
+    mac: !secret broadlink_mac
+    friendly_name: rm
+    type: rm
+    timeout: 15
+    switches:
+#lrac_power
+     lrac_power:
+      friendly_name: "AC Power"
+      command_on: 'JgDIAMf0EzUTNRI3EjYRNxM1EzUSNxITEhMRFBITFBESExITExMUNBE3EzUSNxE3FDQSNxI1EhMTExMSFBESExIUFBEUERM1EzUSNhU0ETYUNRI3EzQSExMTExIUERMSEhMSFBQRFDQRFBE3ExISExITExMUNBEUETcTEhQ0EjcUNBE3ExIVERI1FDUSExI3ExIUMxI3EzUSExITEzYUERE3FBEUERQREjYTExM1EhMSNxITFBETNREUFDQTEhI3ExIUNBE3FPITAA0F'
+      command_off: 'JgDIAMnyEzYTNRE3EjYSNhI3EjcSNRIUEhMSExEVEBQSExMSEhMSNxI1FDUSNxI1EjcSNhM1EhMSFBEUERQSExEUExISExM2EjYSNhM1EjcSNRI3EzURFRISEhQRExIUEhMTEhMTEjYTNBI3ExMRExMSERQSNxISEhQSExI2EjcSNhI2ExITEhM1EjcSExE3ExITNRI3EjYRFBEVEjUTEhI3EhMRFBEUETcTEhM1EhQTNRITERQROBITEjYSFBI1ExISNxI2EfQSAA0F'
+
+############################################################
+#                         Sensors                          #
+############################################################
+
+sensor:
+  - platform: template
+    sensors:
+#Living Room AC Power State
+       lr_ac_status:
+         value_template: >-
+            {% if is_state('switch.lrac_power', 'on') %}
+               on
+            {% else %}
+               off
+            {% endif %}
+         friendly_name: 'Living Room Air Conditioner'
+#Living Room AC Current Temperature
+       lr_ac_temp_sensor:
+         value_template: "{{ states.input_text.lr_ac_temp_text.state }}"
+         
+############################################################
+#                         Scripts                          #
+############################################################
+
+script:
+
+#Increase Temperature by 1
+ temp_up:
+  sequence:
+    - service: input_text.set_value
+      data_template:
+       entity_id: input_text.lr_ac_temp_text
+       value: "{{ [((states.input_text.lr_ac_temp_text.state | int) + 1), 32] | min }}"
+
+#Decrease Temperature by 1
+ temp_down:
+  sequence:
+    - service: input_text.set_value
+      data_template:
+        entity_id: input_text.lr_ac_temp_text
+        value: "{{ [((states.input_text.lr_ac_temp_text.state | int) - 1), 16] | max }}"
+
+#Send IR Packer Via RM Pro 
+ living_room_rm_pro_send_packet:
+  sequence:
+    - service: switch.broadlink_send_packet_172_16_10_252
+      data_template:
+        packet:
+          - '{{ packet_code }}'
+
+#Main Scripts thats calls the others Scripts          
+ living_room_ac_check_state_script:
+  sequence:
+    - service_template: >
+        {% if (selected_mode.lower() == "cool") %}
+          {% if (selected_fan.lower() == "low") %} script.living_room_ac_cool_low_script
+          {% elif (selected_fan.lower() == "med") %} script.living_room_ac_cool_med_script
+          {% elif (selected_fan.lower() == "high") %} script.living_room_ac_cool_high_script
+          {% endif %}
+        {%-elif (selected_mode.lower() == "heat") %}
+          {% if (selected_fan.lower() == "low") %} script.living_room_ac_heat_low_script
+          {% elif (selected_fan.lower() == "med") %} script.living_room_ac_heat_medium_script
+          {% elif (selected_fan.lower() == "high") %} script.living_room_ac_heat_high_script
+          {% elif (selected_fan.lower() == "auto") %} script.living_room_ac_heat_auto_script
+          {% endif %}
+        {% endif %}
+      data_template:
+        selected_temp: '{{ selected_temp }}'
+
+# Mode: COOL and Fan: LOW 
+ living_room_ac_cool_low_script:
+  sequence:
+    - service: script.living_room_rm_pro_send_packet
+      data_template:
+        packet_code: >
+          {% if (selected_temp == "16") %} "JgDIAMnyEjYSNxI2EzUSNhI2EjcRNxITEhMSFBETEhQSExEUERQTNRI2EjcSNhM1EjYTNhI2EhMSExIUERQSEhIUEhISFBE2EjYSNxI2EjcRNhI3EjYTEhITERUSEhITEhQSExEUETcSExI2EhMSFBITEhMRNxMSEjcRFBE3EzUSNhI3EhMRNxI2EjcSNxI2ExITNhI1EhQSExIUEBQSFBI1EhQRFBISEjcSExE3ExISNxITERQRNxMSETcSFRA3EhMRNxI2EvMTAA0F"
+          {% elif (selected_temp == "17") %} "JgDIAMjzEzUSNxI2EzUSNhM1FDURNxMSEhMSFBMSEhMRFBMSExITNhM0EjcTNRI2EzUUNRE3ExITEhITExITEhMSERQTEhM1EhQSNRI3EzUTNRI3EzUSExM1EhMUEhITEhMRExQSEzUSFBM0ExMRFBMSExITNhITEjUTExM1ETcTNRI3ExIRFBI2EzUUNRI2ExITNRM1EjcTEhMSExIRFRM0EhMSFBITEzURFRI1ExISNxMSExIRNxMSEzYTEhM1ERUSNRM1FPMTAA0F
+          "
+          {% elif (selected_temp == "18") %} "JgDIAMnyEjYSNxM1EjcRNhI3ETcTNhETEhQTEhIUEBQTEhITERQSNRI3ETcTNRI2EjcSNhM1ExMRExIUExIRFBEUExMRExI3ERQRNxM1EzUSNhI3EzUSExM2EhMSEhIUExITEhEUEzUSExQ1ERQSExMSERQTNRIUEzURFBI2EjcSNRQ1ERQTNRIUEjUSNxI2ExITNhE2EhQTNREVERMTEhI3EhQQFBITEzUSFBI1EhMTNREVERMSNhIUEzURFBM1ERURNhI3EfQUAA0F
+          "
+          {% elif (selected_temp == "19") %} "JgDIAMf0EzUSNxI1EzYRNxM2ETcSNhEUExITEhIUERQRExMTExITNRM1EzYRNxM1EzUSNxE3ExIRFRISExMRFBITEhMRFBI2EhQRNhI3EzUSNhI2EzYSExI2ExISExITEhQSEhIUEzUSFBE2EhMSFBITEhQQNxMSEjcRExI3EzUTNRI3EhMRExMTEzURNxM2EhMRNxI2EjYTNhMSExIRFBM1EhMTExITETcTEhI3EhMSNRQSERQRNxMTETcSExI2EhMTNhI1EvMTAA0F
+          "
+          {% elif (selected_temp == "20") %} "JgDIAMnzEzYSNRQ1ETcSNhM2EzUTNREVEhITEhIUExMQFBITEhQRNhM1EzYRNxI2EzYTNRE3EhMSFBISEhQSFBETERQSExM1EhQSNRQ1ETcTNhE2EzYRFBI2EhQSExISEhQSExMSETcTEhI3ERQRFBITExISNhITEjcSExE3EzUSNhI3FBERNxM1FBISNRM2ERURNhI3ERQRFBI2ERQSFBI1EhQTEhEUETcTEhI3EhISNxMTEBUSNRITEzYSExE3EhMRNxM1FO8UAA0F
+          "
+          {% elif (selected_temp == "21") %} "JgDIAMnzEjYSNhI2EzUTNhE3EzUVNBETExMTEhITERUTEhISEhMTNhE3FDQSNxI2EjYTNRQ0EhMTExQREhMRFBITFBESExI3EhMTNRM1EjcSNhE3EzUSFBI1EhMTExMSFBESExIUFDMSExI3ExISExIUExISNRIUFDQSExE3EzUTNhI2ExMTEhM0ExMUNBE3ExITNRQ1EjYSExQ0EhQUERQ0ERQSExMSEzUTExM1ERQRNxMSEhMSNxITEzUSExM1EhMTNhM1EfQRAA0F
+          "
+          {% elif (selected_temp == "22") %} "JgDIAMj0EjYTNRI2EjcSNhM1EjYTNhITERQRFBMSExISFBITExIRNxM1EjYSNxI2EjYTNRM1ExMTEhMSERUSEhMSExISExQ1ERQSNhI3EjUSNxM1EzUSExQ1ERQSExMSExISExIUEzQSExQ1ExIRFRITEhITNhMSEzUSFBI1EjcSNhI2ExISNxMSExIRNxM1ExMSNRI3ExITNhI1EhMUEhM1ERQTExISEzYTEhM1EhMTNRITEhQTNREUEjYTEhI3ExISNRM2EvQSAA0F
+          "
+          {% elif (selected_temp == "23") %} "JgDIAMnyEjYRNxI3EjUSNxM1EzUTNhMSEhMRFBITExITEhITExMSNhE3EzUSNhM1FDUTNRM1EhMUEhMSExIRFBEVEhISExI2FBITNRI2EzUSNxI2EjYTEhI3ExISExEUERUSEhMSEzUTExM1EhMRFBMTEhITNRIUEzUTEhE4EjUSNxM1EhMSFBITEhITNhM1ExISNxM0EjcTNRI3ERQTEhI2ExITEhMSEjcTEhM1ERQTNRMSEhMTNhMSEzUSFBI1EhMSNxM1EfURAA0F
+          "
+          {% elif (selected_temp == "24") %} "JgDIAMj0EzUSNhM2EzUSNhI3EjUSNxEUERQSEhMSEhMSFBMSEhMRNxM1EjYTNRQ1ETcTNRI3EhMRFBMSExISExIUEhMTEhE3ExITNRM1EjcTNRE3EzUSFBM1ERQTEhMSExISExIUEzURFBE3ExISExIUExITNREUEzUTEhI3EjYRNxM1EhMSNxE3EzUSExI2ExISNxM1ERQSFBQREzQSExM2EhMSExIUFDMSExI3ExISNhMTExISNhMSEzUSExI3EhMRNxM1EvQSAA0F
+          "
+          {% elif (selected_temp == "25") %} "JgDIAMrxFDURNxM2EjUSNxE3EzUSNhITFBITEhITERQTEhMSEhMTNhE3EzUSNhI2FDURNxM1ExMTEhEUERQTEhMSEhMSFBM0EhMUNRI3EjUSNxI2EzUSExI3EhMRExQSExISExITEzUSExI3ExISExETEhQTNRETFDUSExI3EjUTNhE3ExITEhM1FDURFBI2ExISNxI2ETcTEhITEjcSEhI3ExITEhITEjYTEhI3ExISNhMTEhITNRQSEzURFBM1EhMSNxI2EfQTAA0F
+          "
+          {% elif (selected_temp == "26") %} "JgDIAMryEzUTNRM2ETcTNRM1EjcSNhMSExISExIUEhMSEhIUExITNRI2EzYSNhE3EzUUNBI3ExITEhEUExITEhITEhQTEhM1EhMTNRI3ETcSNhI2EzUSExM2EhMRFBIUExETEhITEzYTEhE3ExITEhITExMTNREUEjYTEhI3EzURNxM1EhMTNhEUETcTEhI3EhMTNRI2ExISNxITEzURFBM1EhMSExMTEzURFBM1ExISNxITExIRNxMSEzUSFBM1ERQSNhM1EvMSAA0F
+          "
+          {% elif (selected_temp == "27") %} "JgDIAMnyEjcSNhE3EjcSNRI3EjYTNRITExMTEhEUERQTEhMSEhMSNxI2EzUSNxI1EjcSNhI2EhMSExMTExIRFBEUExITEhM1EhQTNRE3EzUSNxI1FDUSExI2ExISExITFBITEhITEjYTExI1FBITEhMSEhMSNhMSEjcTEhM1EjcSNRI3ExISExITEjYTEhI3ExITNRI2EzUTNhMSEjcSExI1EhMUEhMSEzUSFBM0EhMSNxMSEhMSNxITEzURFBM1ExISNxI2EfQRAA0F
+          "
+          {% elif (selected_temp == "28") %} "JgDIAMjzFDURNxM1FDURNxM1EzUSNxITERQTEhMSEhMSExMTExIRNxM1ETcTNRQ1ETcTNRI3EhMRFBITExITEhITExMTEhI1FBITNRI2EzUUNRE3EzUSExM2ERQRFBMSExISExITEzYRFBE4EhISExITEhQTNREUEzUSExI3EjUSNxM1EhQTNBI3FBETEhI3EhMSNRQ1ERQRFBI2EzUTExM1ERQSExMSEzUSEhM2ExISNxEUEhISNhQSEzUSExM1EhMSNxM1EvMRAA0F
+          "
+          {% elif (selected_temp == "29") %} "JgDIAMjzFTQRNxI3FDMTNhE3FDQSNhITFBIUERITERUSEhQREhMTNhE3EzUSNhM2EzURNxM1FREUEREUEhMTEhMSEhMSFBQzEhQTNRE3EzUTNhE3EzUSExM1EhMTExQRExISExIUEzQSEhM2ExISExIUExISNRMTEzUSExI2EzUUNRE3ExITEhI3EhMUERE3ExISNhM2ETcTEhM1EjcRFBE3ExITEhITEjcSExE3ExITNRMTExISNhMSEzURFBM1ExISNxM1EfQSAA0F
+          "
+          {% elif (selected_temp == "30") %} "JgDIAMnyEjcSNRQ1ETcTNRM1EjcTNRMSExISExIUExITEhEUEhMTNRI3EjUUNRI2EzUTNhE3ExITEhITExMTEhMSERQSExM1EhMSNxE2FDUSNxI1EjcSExE3ExITEhITExIUEhMSETcTEhM1ExIUEhMSERQSNhMSEjYUEhM1ETcTNRM2ExIRNxMSExISExI3EhMRNxM1EhMSNxI2EjYTEhI2FBITEhEUETgSEhM1EhQTNREUEhMTNRITEjcSExM1EhMTNRI3EvMUAA0F
+          "
+          {% endif %}
+          
+# Mode: COOL and Fan: MED
+ living_room_ac_cool_med_script:
+  sequence:
+    - service: script.living_room_rm_pro_send_packet
+      data_template:
+        packet_code: >
+          {% if (selected_temp == "16") %} "JgDIAMj0EjYSNhI3EjUTNhE3EzUSNhITEhITExMSEhMSExMTExESNxM1EjYTNRM2ETcTNRM1EhMSExQSExIRFBIUEhITEhI3EjYRNxM1EjcRNxM1EjcSEhITEhMUEhMSEhMSExIUEzQSExM2EhMRFBM1ExISNxMSEzUTExI1EjcTEhI2ExITNRI3EjcTNRM1FBITNRE3ExITEhITEhQTEhM1EhMTEhMSEjYTExM1ERQRNxMSEhMSNxMSEzUSFBI1EhMSNxM1EfQRAA0F
+          "
+          {% elif (selected_temp == "17") %} "JgDIAMnzEzUSNhI3EjUTNhE3EzUSNxITERMUEhMSEhMSFBMSEhISNxM1ETcTNRQ1ETcTNRI2EhMSExMTExITEhITExMTEhI1FBITNRE3EzUUNRE3EzUSExI3ERQRFBMSExITEhITEzYSExE3ExITEhI3EhMTNRMSEzUSExM1EjYUEhM1EhMSFBM0EjcTNRI2ExITNRQ1EjYTExISEhMSExQ1EhMSExIUEzQSExI3ExISNhMTExISNRQSEzUSExI3EhMRNxM1EvMSAA0F
+          "
+          {% elif (selected_temp == "18") %} "JgDIAMj0EzUSNhI3EjUUNRE3EzUUNRETFBITEhITEhQTERMTERMUNRE3EzUSNxI2EzUSNhM1ExMTEhMSERQTEhMSEhMSExQ1ERQRNxM1EzYRNxM1EjYTEhI3ExITEhEUEhMTEhMSEjcSExI2ExITEhI2ExMTNREUEzUSExI3EjYSExM1EhMSNxITETcTNRI3EhISNhQ1ERQSNhMSEhMTExM1ERQSExMTEjUSExQ1ERQSNhMSExISNxMSEzUTExM0EhMTNhM1EvQTAA0F
+          "
+          {% elif (selected_temp == "19") %} "JgDIAMjzEjUTNhE3EzUSNhI3EzUSNhMSEhMTExMSERQSEhMSExISNxI2ETcTNRM1EjcTNRE3ExISExIUExITEhEUEhMTEhM1EhQTNRE3EzUSNxI1FDUSExE3ExISExITFBITEhMSETgSEhM1FBITEhM1ExMSNRITEzYRFBI2EzUSExM2EhMRFBIUEjUSNxM1ERQSNhM1FDUSNhMSExITEhI3EhMTEhEUETcTEhM1FBITNREUEhMTNRITEjcSExI2ExITNRI3EvQSAA0F
+          "
+          {% elif (selected_temp == "20") %} "JgDIAMjzEzUSNxI2EjYSNxI1EjcTNRMSExISExITExMTEhEUERQTNRI3EjYRNxM1EjcRNhQ1ERQRFBMTEhISExITFBITEhM1FBISNRI3EzURNxM1EzYSExE3ExITEhITEhQTEhMSEjYTEhM1EhMUEhM1ERQRNxMSEjcTEhM1ETcTEhM1FBITNRE3FBISNhQ1EhMRNxM1EhMUEhM1ERQRFBM1ExISExITFDUTEhI3EhMTNREUExITNRITEjcSExE3ExITNRI2FPIUAA0F
+          "
+          {% elif (selected_temp == "21") %} "JgDIAMnyEzUSNxI2EzUSNxI1EjcTNRMTEhISExITFBITEhITERQTNRI2FDURNxM1EjcSNhE3ExISExITExMTEhEUERQTEhM1EhMSNxE3EzUSNhM2ETYUEhM1EhMTExMSExIRExMTEzUSExI3EhMRFBE3ExITNRIUEzURFBE3EzUSExI3EhMRFBE3ExISNhQ1ERQRNxM1EjYUEhM1ERQSFBM0EhMSExMTEzUSExI3EhMTNRITExITNRITEjcSExI2EhMTNRI2FPITAA0F
+          "
+          {% elif (selected_temp == "22") %} "JgDIAMnyEzURNxM1EzYRNxM1EjcSNRQSExITEhEUExMSEhMSEhMTNhI2EzUSNhQ1ETcTNRI3EhMSExEUEhMTEhMSEhMSFBM1ERQRNxM1EjcSNhI2EzUSFBM1ERQRFBMSExITEhITEjcTEhE3ExITEhM1ExMTNREUETcTEhM1FDURFBE3ExITNRITFBITNRI2FBITNBI3ExITNRI3EhMRFBE3ExITEhITEjcTEhM1EhMTNRITEhMSNxITEjYSFBM0EhMSNxM1EvMTAA0F
+          "
+          {% elif (selected_temp == "23") %} "JgDIAMjzFDURNxM1EzYRNxM1EjYSNxITEhMRFBMSExISExIUExITNRM1EjcSNRI3EjYTNRI3EhMRFBETFBITEhITEhMTExM1ERMUNRI3EjUSNxI2EjYSExI3EhMRFBEUExITEhITEjcSExE3ExITEhI3EhMTNRITEzUSExI3ETYUEhM1EhMTExMSExIRNxM1EhMTNRM1FDURNxM1EhMUEhM1ERQSFBISEzUSFBM1ERQRNxMSEhMSNxMSEzUTEhM1EhMTNhI2EvMTAA0F
+          "
+          {% elif (selected_temp == "24") %} "JgDIAMnyEzUSNxM1EzUSNxI1FDURNxMSEhMTExMSERQRFBMSExISNxI1EzYRNxM1EjcSNhM1EhMSFBMSEhISExQSExISExI2ExISNhQ1ETcTNRI3EjYTEhM1EhQTEhISEhMUEhMSEzUSFBI1EhMUEhM1ERQTNRITEjcSExE3EzUSExQ1EhMRNxM1FDYRFBE3ExISNhM1EhMSExQSEzUSExM1EhMSExMTEzUSExI2ExISNxMSExISNxITEzQTExM1EhMRNxM1EvMUAA0F
+          "
+          {% elif (selected_temp == "25") %} "JgDIAMf0EzURNxM1FDURNxM1EzUSNxMSEhMSFBISExISExQSExITNRM1EjcSNhE3EzUTNRI3ExITEhEUEhQSEhMSEhMTExM1ERQSNhM1EzYRNxM1EjcSExM1EhMTEhMSEhMSFBMSEzUSExM1EhMSFBM1ERQRNxMSEjYTExM1ETcTEhI2ExMTEhM1EzUSExI3EhMTNRI2EzUSFBMSEzUSEhM2EhMSExMTEzURFBE3ExISNhMTExISNhMSEzUSExI3EhMRNxM1EvQSAA0F
+          "
+          {% elif (selected_temp == "26") %} "JgDIAMjzETcTNRQ1ETcTNRI2EzUUNREUEhMTEhMSEhMSFBMSExIRNxM1EjcSNhE3EzUSNhI2FBITEhITEhMSFBMSEhISExI3ExISNxI1EjcTNRE4EjUSExI3ExISExEUExMTEhITETcTEhM1EhMTExM1ERQSNhMSEjYUEhM1ETcTEhM1ExMTNREUETcTEhI2ExMTNRE3ExITNRITFDUTEhE3ExITEhMSEjcTEhM1ERQTNhISEhMSNxMSEzUSFBM1ERQRNxM1EvMTAA0F
+          "
+          {% elif (selected_temp == "27") %} "JgDIAMryEjYTNRI3EjYSNhM1EzYRNxMSEhMSExMTExISEhITExMTNRI3EjUSNxM1ETcTNRM2EhMRFBIUEhITEhITEhQTEhM1EhMTNRI3EjYRNxM1EjcSExE3ExITEhITEhQTEhMSETcTEhM1EhMTExM1ERQTNRITEjcSExM1EzUTEhI3EhMTEhEUEjYTEhI2FBITNRE3EzUSNxMSETcTEhM1EhMTExMSEzUSExM1EhMSNxITERQRNxMSEzUTExM1ERQSNhM1EvQTAA0F
+          "
+          {% elif (selected_temp == "28") %} "JgDIAMnyETcTNRI2EjYUNRE3EzUTNhETExMTEhMSEhMTExMSERMSNxM1EjYTNRQ1ETcTNRI3EhMRExQSExITEhITExMTEhM1EhMTNRI3EjUSNxM1EjYTEhI3ExITEhEUEhQSEhMSEjYUEhM1ERQTExI1EhMTNhITETcTEhM1EjcTEhI2ExITNRI3FBIRFBI2ExISNxM1ERQSExM1EjYUEhM1ERQSFBISEzUSFBM1EhMSNxITEhISNhQSEzUSExI3EhMRNxM1EvQSAA0F
+          "
+          {% elif (selected_temp == "29") %} "JgDIAMryEzUUNBI3EzUSNhM1EzYRNxMSExISExIUExITEhEUEhMTNRI3EjYRNxM1ETcTNRM2EhMRFBMTExISEhITExIUEhM1EhMSNhM1EzYSNhI2EjYUEhM1ERQTExMSExIRExITFDUTEhI2FBITEhI2ExITNRITEjcSExM1ETcTEhI2FBITEhM1ERQTExI1EhMSNxM1EjcSExM0EjcTEhM1ExMTEhMSEjYSExM1EhMSNxMSExISNhMTEjUSExI3ExITNRI3EvMTAA0F
+          "
+          {% elif (selected_temp == "30") %} "JgDIAMnzEzURNxM1EzUSNxI2EjYSNxMSExIRFBITExITEhITExMTNRE3EjYSNxE3EzUSNhM1EhQTEhMSERQRFBMSExITEhI3ExITNRM1EjcTNRE3EzUSExI3ERQRFBITExITEhITEjcSExE3ExITEhI3ExITNREUEzUTEhI3EzURFBI2ExISNxITExIRFBE3ExISNhQ1ERQRNxM1EjcSExM1EhMTEhMSEzYTEhM1ERQSNhMSEhMSNxMSEzUSFBI1EhMSNxM1EfURAA0F
+          "
+          {% endif %}
+          
+# Mode: COOL and Fan: HIGH
+ living_room_ac_cool_high_script:
+  sequence:
+    - service: script.living_room_rm_pro_send_packet
+      data_template:
+        packet_code: >
+          {% if (selected_temp == "16") %} "JgDIAMnyETcTNRM2ETcTNRM1EjcSNhMSExISExITExMTEhETExMTNRI2EzUUNRE3EzUSNxI2ExITEhITEhMTExMSERQRExQ1EjcSNRI3EzUSNhI2EzYRFBEUExITEhITEhMTExMSEzUTEhM1EhMTExMSETcTNRITEjcSExI2EzUSNxITExIRNxM1EjcTNRI3ExISNhM1EhMSExQSExISExE3ExITEhITFDUTEhE4EhITNRITFBITNREUEzUSExI3ExITNRM1EvMSAA0F
+          "
+          {% elif (selected_temp == "17") %} "JgDIAMnyEjYSNhQ1ETcSNhQ0EjcTNRMSExISExMTExITEhEUExITNRI3EjUUNRE3EzUSNxI2ExITEhITEhMTExMSERQRFBM1EhMSNxI2EzUSNxI1EjcSExE3ExISExITExMTEhEUEjYTEhI3ExIRExITFDUSNxISEzUUEhM1EjYTNRQSExISExE3EzUSNxM1ExITNRI2EzUUEhMSEhMRFBI2EhMSExQSEzUSExM1EhMTNhITERQSNhMSEjcSExM1ExITNRI3EvITAA0F
+          "
+          {% elif (selected_temp == "18") %} "JgDIAMnyEjcSNRM2ETcTNRI3EjYSNhEUEhQSEhQREhMUEhMSFBERNxM1EjcSNhI2EjcRNxE3FBESExITFRETEhETEhMTExM1EhMSNhI3EjYRNxI2EjcSExM1EhMUERMSEhMTExQRFDQRFRI1EhMSExQSEzURNxMSEzUTExQ0ETcTNRITExMUNBEUETcUNBI3EhMSNhI2ExISNxITExISExE4EhISExITEzYSExI2ExMUNBETExMUNBITEjcSExE3EhMUNBI3EvIVAA0F
+          "
+          {% elif (selected_temp == "19") %} "JgDIAMjzEzUSNhI3EjYTNRI3EjUUNREUEhMTEhMSEhMTExMSERQRNxM1EzUSNxM1EjYSNxI2ERQTEhMSEhMSExMTExIRExI3ExISNxI1EjcTNRI2EjYUEhM1EhMTEhMSEhMSExMTEzURFBM1EhMSFBMSEzURNxMSEjcSExM0FDUSNhMTEhMSEhITFDUSNhQ0EhMSNxM1EjYTNRQSExITEhE3ExITEhITEzYSExE3ExITNRIUExITNREUEzUSExI3EhMTNRM1EvQSAA0F
+          "
+          {% elif (selected_temp == "20") %} "JgDIAMnyEjYTNRE3EzYSNhE3EzYSNRITExMTEhEUEhMTEhMSEhMTNhE3EzUSNhM1FDURNxM1EhMTExMSERQSExMSExISExI3EhMRNxM1EjcSNRM2EzUTExI1EhMUEhMSExIRFBIUEjUSExM2ExIRFBIUEjUSNxMSEzURExM1EjYUNRITERQTNRI2FBITNRE3ExITNRQ1ERQRFBM1EhMSExM2ERQRFBITEzUSExM2ExIRNxMSExISNhQSEzURFBI2EhMSNxM1EfQRAA0F
+          "
+          {% elif (selected_temp == "21") %} "JgDIAMf0EzUSNxI1FDURNxM1EjcRNhQSExISExMTExISEhITFBITNRE3EzUUNRI2EzUSNxI2ERQTEhMSEhMSExMTExIRFBE3ExITNRM2EjYTNRI3EjUSExM2ExISExEUExMTEhISEjcTEhM1ExMTEhMSETcTNRITEjcSExE2FDUSNhMTExISExE3ExITNRI3EhMRNxM1EjYUEhM0EhMUEhM1EhMSFBMSEzURFBM1EhMSNxITExIRNxMSEzUSExM2ERQRNxM1EvMSAA0F
+          "
+          {% elif (selected_temp == "22") %} "JgDIAMjzFDURNxM2EjUSNxI2EzUSNhMSEhMTExMSEhMRFRISExISNxM1EjYTNRM1EjcTNRI2ExISExMTExISExEUExITEhI3EhMTNRM1EjcSNRI3EzUSFBI1EhMTExMSExIRFBIUEjUSExM2EhMRFBITEzUSNxITEjYTEhM1EjcTNRITExITNRIUExITNRM1ExISNxI1EhMTNhI2ExMSEhI2FBITEhITETcTEhI2FBITNREUExMSNRMSEzYRFBE3ExITNRM2EvQRAA0F
+          "
+          {% elif (selected_temp == "23") %} "JgDIAMnyEjYSNxM1ETcSNhQ0EjcSNhMSExISExMTExIRFBEUExITNRM1EjcTNRE3EzUUNRE3ExISExITExMTEhEUEhIUEhM1EhQTNBI3EzUSNhM1EzYRFBE3ExISExMTExITEhEUEjYSExI3EhMTEhEUEzUSNhQSEzQSEhQ1EzUTNRITEhMUEhMSEhMSNxI1EhMUNRI2EzUSNxM1ERQSExM1EhMTExMSEzUSFBI1EhMTNhEUERQSNhMSEjcTEhM1ERQTNRI3EvMSAA0F
+          "
+          {% elif (selected_temp == "24") %} "JgDIAMvxEzUUNRE3EzUSNhI3EzUSNhITEhMTExMSERQRFBMSExISNxI1EjcTNRM1EzUUNRE3ExITEhITFBITEhMSERQSExM1EhMTNhI2EzUSNxI2ETcTEhM1ExMTEhMSERMTExMSEzUSFBM0EhMSFBMSEzUSNxITEzUSExM1EjcSNRITExMTNRI3EjUSExI3ExISNxI1EhMSExQSEzUSExI2ExMRExMTEzUSExI3EhMRNxMSExITNRIUEzURFBE3ExITNRM2EvQRAA0F
+          "
+          {% elif (selected_temp == "25") %} "JgDIAMjzEzUSNxI1EzYROBI1EzYRNxMSEhMSExMTEhISExMTExITNRM1EjcSNhI2EzUTNRI3EhMRFBITExITEhITExMTEhM1ExITNRI3EjUUNRI2EzYRExQ1ERQSExMSExISExIUEzURFBI2EhMSExMTEzURNxMSEjYUEhM1ETcTNRMTExISExE3EzUSExM1EhMSNxM1EjYTEhITEzYTEhE3ExITEhITEjcSExI2ExITNRMSFBITNREUEzUSExI3EhMRNxM1EvMSAA0F
+          "
+          {% elif (selected_temp == "26") %} "JgDIAMrxEjcSNhI2EjYUNBI3EzUSNhITEhMUEhMSERQRFBMSExISNhQ1ETcTNRI3EjYSNhM1ExMTEhITERMTExMSExISExI3EhMRNxM1EjYTNRI2FDUSExI2ExISExITFBITEhMSEjYUEhM1ERMUEhMSEjYSNxITETcTEhM1EjcSNhEUExITNRITEjcSExM1ExITNRI3EhMTNREUEzUTEhI3ExITEhITETcTExI1EhMUNRITEhMSNxITETcTEhM1EhMSNxI2EfQSAA0F
+          "
+          {% elif (selected_temp == "27") %} "JgDIAMnzEzUSNxI1FDURNxM1FDURNxMSEhMTExISEhMTExMSExIRNxM1EzYRNxM1EjYTNRQ1ERQTEhMSEhMSExMTExIRFBE3ExISNxI2ETcTNRM1EjcTEhM1ExITEhITEhMTExMSEjYTEhM1EhQTEhMSETcTNRITEzUSExM2EzUTNRMSEhQTEhMSEzUTExI1EhMUNRE3EzUSNxMSEzUTEhM1EhMTExMSEzUTEhM1EhMTNRIUERQTNRITEjcSExE3ExITNRI3EvITAA0F
+          "
+          {% elif (selected_temp == "28") %} "JgDIAMnyETcSNhQ0EjcSNhM1EjcSNhMSExISExMTEhITEhITFBITNRI2EzUUNRE3EzUSNxI1ExMTEhITERQTExISExISExM2ERQRNxM1FDUSNhM1EjcSExM1ExITEhMSEhMSFBMSEzUSExM1EhMTExMSEzQTNhITEjcTEhI1EzYSNhMTEhITNRQ1EhQSExM1EhMSNxM1ERUSEhM1EzYSExE3ExITEhMSEjcTEhM1ERUSNRITEhMTNhMSEjYUEhM0EhMUNRI2FPESAA0F
+          "
+          {% elif (selected_temp == "29") %} "JgDIAMryEjYTNRI3EjUTNhE3EzUSNxITERMUEhMSEhMSExMTExISNhM1EjYTNRI3EjYSNhI2FBITEhEUERQTEhMSEhMSExM2EhMRNxM1EjcSNRM2EzUTExM0EhMTExMSExISExITFDQSExI3ExISExITEzYSNhMSEzUSExM2EjUUNRMSEhMSFBM0EhMSExQ1EhMSNxI2ETcTEhM1EjcSExE3ExITEhITEjcSExM1EhMTNRITEhMTNhITETcTEhM1EhIUNRI2EvMRAA0F
+          "
+          {% elif (selected_temp == "30") %} "JgDIAMjzEzUSNxI2ETcSNhM1EjcTNRITExITEhITExMTEhITERQTNRI3EjYRNxM1EjYSNhQ1ERQSExMSExISExMTExITEhE3ExITNRM2EjYTNRI2FDURExM2ExISExIUExITEhEUETcTEhI2ExMTEhMSETcTNRITEjcSExE3EzUSNhQSExIRNxMSExITEhI3EhMTNRI2ExISNhQ1ETcTEhM1EhMTExMSEzUSExM1EhMSNxITEhMRNxMSEzUTExM1ERQRNxM1EvQSAA0F
+          "
+          {% endif %}
+
+####################################################
+#                   Automations                    #
+####################################################
+
+automation:
+
+#Runs when Input Boolean turn to on
+- id: lr_ac_status_on
+  alias: lr_ac_status_on
+  trigger:
+    platform: state
+    entity_id: input_boolean.lr_ac_status
+    to: 'on'
+  action:
+    service: script.living_room_ac_check_state_script
+    data_template:
+      selected_mode: '{{ states.input_select.lr_ac_mode.state }}'
+      selected_fan: '{{ states.input_select.lr_ac_fan.state }}'
+      selected_temp: '{{ states.sensor.lr_ac_temp_sensor.state }}'
+
+#Runs whenever one of the controllers for mode (input_select), fan (input_select) or temperature (sensor) changes their states as long as the power (input_boolean) is on.
+- id: lr_ac_changes
+  alias: lr_ac_changes
+  trigger:
+    - platform: state
+      entity_id: sensor.lr_ac_temp_sensor
+    - platform: state
+      entity_id: input_select.lr_ac_mode
+    - platform: state
+      entity_id: input_select.lr_ac_fan
+  action:
+    - condition: state
+      entity_id: input_boolean.lr_ac_status
+      state: 'on'
+    - service: script.living_room_ac_check_state_script
+      data_template:
+        selected_mode: '{{ states.input_select.lr_ac_mode.state }}'
+        selected_fan: '{{ states.input_select.lr_ac_fan.state }}'
+        selected_temp: '{{ states.sensor.lr_ac_temp_sensor.state }}'

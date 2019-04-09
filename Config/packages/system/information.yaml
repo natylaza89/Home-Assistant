@@ -1,0 +1,196 @@
+###############################################################################
+#   @author         :   Naty Laza
+#   @date           :   04/01/2019
+#   @package        :   General Information
+#   @description    :   Database Sensors,Status&Info, HA Version
+###############################################################################
+
+####################################################
+#                   Customize                      #
+####################################################
+
+homeassistant:
+  customize: 
+# Currencies Rate Bank of Israel
+     sensor.full_db_size:
+      icon: mdi:database
+     sensor.events_table_size:
+      icon: mdi:database
+     sensor.states_table_size:
+      icon: mdi:database
+     sensor.schema_changes_table_size:
+      icon: mdi:database
+     sensor.recorder_runs_table_size:
+      icon: mdi:database
+      
+# Tronsmart Information
+     sensor.disk_use_percent_home:
+      friendly_name: "Disk Use"
+     sensor.disk_free_home:
+      friendly_name: "Disk Free"
+     sensor.memory_use_percent:
+      friendly_name: "Memory Use"
+     sensor.uptime_in_days:
+      friendly_name: "Days"
+     sensor.uptime_in_hours:
+      friendly_name: "Hours"
+     sensor.uptime_in_minutes:
+      friendly_name: "Minutes"
+      
+#Ha Versions
+     sensor.ha_github_version:
+      icon: mdi:github-circle
+     sensor.ha_pypi_version:
+      icon: mdi:language-python
+     sensor.current_version:
+      icon: mdi:home-assistant
+
+####################################################
+#                   Sensors                        #
+####################################################
+sensor:
+
+# Tronsmart Info
+ - platform: uptime
+   name: Uptime in days
+   unit_of_measurement: days
+   
+ - platform: uptime
+   name: Uptime in hours
+   unit_of_measurement: hours
+   
+ - platform: uptime
+   name: Uptime in minutes
+   unit_of_measurement: minutes
+ 
+ - platform: time_date
+   display_options:
+      - 'time'
+      - 'date'
+
+ - platform: systemmonitor
+   resources:
+      - type: disk_use_percent
+        arg: /home
+      - type: disk_free
+        arg: /home
+      - type: memory_use_percent
+      - type: memory_free
+      - type: last_boot
+  
+  
+#Versions of Home Assistant
+ - platform: version
+   name: Current Version
+
+ - platform: rest
+   name: ha_pypi_version
+   resource: 'https://pypi.python.org/pypi/homeassistant/json'
+   value_template: >-
+     {{ value_json.info.version }}
+   scan_interval: 1800
+    
+ - platform: rest
+   name: ha_github_version
+   resource: 'https://api.github.com/repos/home-assistant/home-assistant/releases/latest'
+   headers:
+     accept: application/vnd.github.v3+json
+     content-type: application/json
+     user-agent: home-assistant/rest-sensor
+   value_template: >-
+     {{ value_json.tag_name if value_json.tag_name.split('.')|length != 2 else value_json.tag_name ~ '.0' }}
+   scan_interval: 1800
+
+
+####################################################
+#                                                  #
+#                 Sensor - Template                #
+#                                                  #
+####################################################
+
+ - platform: template
+   sensors:
+  
+      sensor_count:
+        friendly_name: 'Number of Sensors'
+        value_template: >
+          {%- set domains = ['sensor'] -%}
+          {%- for domain in domains -%}
+            {%- for item in states[domain] -%}
+              {% if loop.first %}
+                {{loop.length}}
+              {% endif %}
+            {%- endfor -%}
+          {%- endfor -%}
+          
+      binary_count:
+        friendly_name: 'Number of Binary Sensors'
+        value_template: >
+          {%- set domains = ['binary_sensor'] -%}
+          {%- for domain in domains -%}
+            {%- for item in states[domain] -%}
+              {% if loop.first %}
+                {{loop.length}}
+              {% endif %}
+            {%- endfor -%}
+          {%- endfor -%}
+          
+      script_count:
+        friendly_name: 'Number of Scripts'
+        value_template: >
+          {%- set domains = ['script'] -%}
+          {%- for domain in domains -%}
+            {%- for item in states[domain] -%}
+              {% if loop.first %}
+                {{loop.length}}
+              {% endif %}
+            {%- endfor -%}
+          {%- endfor -%}
+          
+      switch_count:
+        friendly_name: 'Number of Switches'
+        value_template: >
+          {%- set domains = ['switch'] -%}
+          {%- for domain in domains -%}
+            {%- for item in states[domain] -%}
+              {% if loop.first %}
+                {{loop.length}}
+              {% endif %}
+            {%- endfor -%}
+          {%- endfor -%}
+                   
+      lights_count:
+        friendly_name: 'Number of Lights'
+        value_template: >
+          {%- set domains = ['light'] -%}
+          {%- for domain in domains -%}
+            {%- for item in states[domain] -%}
+              {% if loop.first %}
+                {{loop.length}}
+              {% endif %}
+            {%- endfor -%}
+          {%- endfor -%}
+          
+      tracker_count:
+        friendly_name: 'Number of Devices'
+        value_template: >
+          {%- set domains = ['device_tracker'] -%}
+          {%- for domain in domains -%}
+            {%- for item in states[domain] -%}
+              {% if loop.first %}
+                {{loop.length}}
+              {% endif %}
+            {%- endfor -%}
+          {%- endfor -%}
+          
+      zone_count:
+        friendly_name: 'Number of Devices'
+        value_template: >
+          {%- set domains = ['zone'] -%}
+          {%- for domain in domains -%}
+            {%- for item in states[domain] -%}
+              {% if loop.first %}
+                {{loop.length}}
+              {% endif %}
+            {%- endfor -%}
+          {%- endfor -%}
