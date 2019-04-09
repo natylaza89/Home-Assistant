@@ -12,5 +12,5 @@ For wiki of Xioami Mi Robot implementation in Home Assistant click <a href=>here
 <h1>My House Map:<br></h1>
 
 <center>  
-<img src=https://github.com/natylaza89/Home-Assistant/blob/master/pics/packages/vaccum/map.pngs">
+<img src="https://github.com/natylaza89/Home-Assistant/blob/master/pics/packages/vaccum/map.pngs">
 </center>
